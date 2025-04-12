@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.util.Log;
 import android.view.Choreographer;
 import android.view.View;
 
@@ -17,6 +19,8 @@ public class GameView extends View implements Choreographer.FrameCallback {
     public static float frameTime;
 
     private Player player = new Player();
+    private Tile tile = new Tile(SCREEN_WIDTH / 2, 12);
+
     private final Matrix transformMatrix = new Matrix();
     private final Matrix invertedMatrix = new Matrix();
     private static long previousNanos;
@@ -28,15 +32,31 @@ public class GameView extends View implements Choreographer.FrameCallback {
         super(context);
 
         Resources res = getResources();
-        Bitmap ballBitmap = BitmapFactory.decodeResource(res, R.mipmap.character_left);
-        Player.setBitmap(ballBitmap);
+
+        Bitmap playerBitmap = BitmapFactory.decodeResource(res, R.mipmap.character_left);
+        Player.setBitmap(playerBitmap);
+
+        Bitmap tileBitmap = BitmapFactory.decodeResource(res, R.mipmap.tiles);
+        Tile.setBitmap(tileBitmap);
 
         scheduleUpdate();
     }
 
 
     private void update() {
+        float prev_y = player.y;
+
         player.update();
+
+        // 아래로 내려가는 중에 충돌하는 경우
+        if(player.dy > 0 && player.collider.isCollide(tile.collider)) {
+            float top = tile.collider.getTop();
+            // 이전프레임에 타일보다 위에 있던 경우
+            if(prev_y < top) {
+                player.y = top;
+                player.jump();
+            }
+        }
     }
 
 
@@ -45,6 +65,7 @@ public class GameView extends View implements Choreographer.FrameCallback {
         super.onDraw(canvas);
         canvas.setMatrix(transformMatrix);
 
+        tile.draw(canvas);
         player.draw(canvas);
     }
 
