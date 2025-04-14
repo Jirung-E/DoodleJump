@@ -5,88 +5,127 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.Choreographer;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
+
+
 public class GameView extends View implements Choreographer.FrameCallback {
-    public static final float SCREEN_WIDTH = 9.0f;
-    public static final float SCREEN_HEIGHT = 16.0f;
-    public static float frameTime;
-
-    private Player player = new Player();
-    private Tile tile = new Tile(SCREEN_WIDTH / 2, 12);
-
-    private final Matrix transformMatrix = new Matrix();
-    private final Matrix invertedMatrix = new Matrix();
+    private static final String TAG = GameView.class.getSimpleName();
     private static long previousNanos;
-
-    private String TAG = GameView.class.getSimpleName();
-
-
-    public GameView(Context context) {      // AttributeSet - 미리보기를 위해 적어두기
-        super(context);
-
-        Resources res = getResources();
-
-        Bitmap playerBitmap = BitmapFactory.decodeResource(res, R.mipmap.character_left);
-        Player.setBitmap(playerBitmap);
-
-        Bitmap tileBitmap = BitmapFactory.decodeResource(res, R.mipmap.tiles);
-        Tile.setBitmap(tileBitmap);
-
-        scheduleUpdate();
+    public static float frameTime;
+    public static GameView view;
+    private ArrayList<Scene> sceneStack = new ArrayList<>();
+    public interface OnEmptyStackListener {
+        public void onEmptyStack();
+    }
+    private OnEmptyStackListener emptyStackListener;
+    public void setEmptyStackListener(OnEmptyStackListener emptyStackListener) {
+        this.emptyStackListener = emptyStackListener;
     }
 
 
+    ///////////////////////////////////////// Constructor /////////////////////////////////////////
+    public GameView(Context context) {      // AttributeSet - 미리보기를 위해 적어두기
+        super(context);
+
+        GameView.view = this;
+        scheduleUpdate();
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
     private void update() {
-        float prev_y = player.y;
-
-        player.update();
-
-        // 아래로 내려가는 중에 충돌하는 경우
-        if(player.dy > 0 && player.collider.isCollide(tile.collider)) {
-            float top = tile.collider.getTop();
-            // 이전프레임에 타일보다 위에 있던 경우
-            if(prev_y < top) {
-                player.y = top;
-                player.jump();
-            }
+        Scene scene = getTopScene();
+        if (scene != null) {
+            scene.update();
         }
+    }
+
+
+    public void pushScene(Scene scene) {
+        int last = sceneStack.size() - 1;
+        if (last >= 0) {
+            sceneStack.get(last).onPause();
+        }
+        sceneStack.add(scene);
+        scene.onEnter();
+    }
+    public Scene popScene() {
+        int last = sceneStack.size() - 1;
+        if (last < 0) {
+            notifyEmptyStack();
+            return null;
+        }
+        Scene top = sceneStack.remove(last);
+        top.onExit();
+        if (last >= 1) {
+            sceneStack.get(last - 1).onResume();
+        } else {
+            notifyEmptyStack();
+        }
+        return top;
+    }
+
+    private void notifyEmptyStack() {
+        if (emptyStackListener != null) {
+            emptyStackListener.onEmptyStack();
+        }
+    }
+
+    public void changeScene(Scene scene) {
+        int last = sceneStack.size() - 1;
+        if (last < 0) return;
+        sceneStack.get(last).onExit();
+        sceneStack.add(scene);
+        scene.onEnter();
+    }
+    public Scene getTopScene() {
+        //return sceneStack.getLast();
+        // Call requires API level 35 (current min is 24): java. util. ArrayList#getLast
+        int last = sceneStack.size() - 1;
+        if (last < 0) return null;
+        return sceneStack.get(last);
     }
 
 
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
-        canvas.setMatrix(transformMatrix);
 
-        tile.draw(canvas);
-        player.draw(canvas);
+        canvas.save();
+        Metrics.concat(canvas);
+
+        if (BuildConfig.DEBUG) {
+            drawDebugBackground(canvas);
+        }
+
+        Scene scene = getTopScene();
+        if (scene != null) {
+            scene.draw(canvas);
+        }
+
+        canvas.restore();
+        if (BuildConfig.DEBUG) {
+            drawDebugInfo(canvas);
+        }
     }
+
 
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        float view_ratio = (float)w / (float)h;
-        float game_ratio = SCREEN_WIDTH / SCREEN_HEIGHT;
-
-        transformMatrix.reset();
-        if (view_ratio > game_ratio) {
-            float scale = h / SCREEN_HEIGHT;
-            transformMatrix.preTranslate((w - h * game_ratio) / 2, 0);
-            transformMatrix.preScale(scale, scale);
-        } else {
-            float scale = w / SCREEN_WIDTH;
-            transformMatrix.preTranslate(0, (h - w / game_ratio) / 2);
-            transformMatrix.preScale(scale, scale);
-        }
-        transformMatrix.invert(invertedMatrix);
+        Metrics.onSize(w, h);
     }
 
     @Override
@@ -102,7 +141,63 @@ public class GameView extends View implements Choreographer.FrameCallback {
         }
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        Scene scene = getTopScene();
+        if (scene != null) {
+            return scene.onTouchEvent(event);
+        }
+
+        return super.onTouchEvent(event);
+    }
+
+    public void onBackPressed() {
+        int last = sceneStack.size() - 1;
+        if (last < 0) return; // finish activity here ?
+
+        Scene scene = sceneStack.get(last);
+        boolean handled = scene.onBackPressed();
+        if (handled) return;
+
+        popScene();
+    }
+
     private void scheduleUpdate() {
         Choreographer.getInstance().postFrameCallback(this);
+    }
+
+
+    //////////////////////////////////////////// DEBUG ////////////////////////////////////////////
+    private Paint borderPaint, gridPaint, fpsPaint;
+    private void drawDebugBackground(@NonNull Canvas canvas) {
+        if (borderPaint == null) {
+            borderPaint = new Paint();
+            borderPaint.setStyle(Paint.Style.STROKE);
+            borderPaint.setStrokeWidth(10f);
+            borderPaint.setColor(Color.RED);
+
+            gridPaint = new Paint();
+            gridPaint.setStyle(Paint.Style.STROKE);
+            gridPaint.setStrokeWidth(1f);
+            gridPaint.setColor(Color.GRAY);
+        }
+
+        canvas.drawRect(Metrics.borderRect, borderPaint);
+        for (float x = Metrics.GRID_UNIT; x < Metrics.width; x += Metrics.GRID_UNIT) {
+            canvas.drawLine(x, 0, x, Metrics.height, gridPaint);
+        }
+        for (float y = Metrics.GRID_UNIT; y < Metrics.height; y += Metrics.GRID_UNIT) {
+            canvas.drawLine(0, y, Metrics.width, y, gridPaint);
+        }
+    }
+    private void drawDebugInfo(Canvas canvas) {
+        if (fpsPaint == null) {
+            fpsPaint = new Paint();
+            fpsPaint.setColor(Color.BLUE);
+            fpsPaint.setTextSize(100f);
+        }
+
+        int fps = (int) (1.0f / frameTime);
+        canvas.drawText("FPS: " + fps, 100f, 200f, fpsPaint);
     }
 }

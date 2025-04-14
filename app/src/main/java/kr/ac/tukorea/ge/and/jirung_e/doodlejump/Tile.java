@@ -5,30 +5,35 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-public class Tile {
+
+public class Tile implements IGameObject {
     private final RectF dstRect = new RectF();
-    private static final Rect srcRect = new Rect(0, 0, 78, 22);
-    private static final float IMG_WIDTH = 2.0f;
+    private static final Rect srcRect = new Rect(0, 0, 118, 33);
+    private static final float IMG_WIDTH = Metrics.width / 5.4f;
     private static final float IMG_HEIGHT = IMG_WIDTH * ((float) srcRect.height() / srcRect.width());
     private float x, y;
     public BoxCollider collider;
-
+    private final Bitmap bitmap;
 
     public Tile(float x, float y) {
+        bitmap = BitmapPool.get(R.mipmap.tiles);
+
         this.x = x;
         this.y = y;
         collider = new BoxCollider(IMG_WIDTH, IMG_HEIGHT);
+
         updateCollider();
         updateRect();
     }
 
 
-    private static Bitmap bitmap;
-    public static void setBitmap(Bitmap bitmap) {
-        Tile.bitmap = bitmap;
+    @Override
+    public void update() {
+        updateCollider();
+        updateRect();
     }
 
-
+    @Override
     public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmap, srcRect, dstRect, null);
         collider.draw(canvas);

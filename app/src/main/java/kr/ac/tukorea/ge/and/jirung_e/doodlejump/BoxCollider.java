@@ -5,18 +5,24 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
+
 public class BoxCollider {
     private RectF rect;
+    private static final Paint paint = new Paint();
+
 
     public BoxCollider(float width, float height) {
-        rect = new RectF(-width / 2, -height / 2,
-                width / 2, height / 2);
+        this(0, 0, width, height);
     }
 
     public BoxCollider(float x, float y, float width, float height) {
         rect = new RectF(x - width / 2, y - height / 2,
                 x + width / 2, y + height / 2);
+        paint.setColor(Color.GREEN);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5);
     }
+
 
     public void setPosition(float x, float y) {
         float width = rect.width();
@@ -36,9 +42,6 @@ public class BoxCollider {
     }
 
     public void draw(Canvas canvas) {
-        Paint paint = new Paint();
-        paint.setColor(Color.GREEN);
-        paint.setStyle(Paint.Style.STROKE);
         canvas.drawRect(rect, paint);
     }
 }
