@@ -26,15 +26,34 @@ public class InGameScene extends Scene {
 
         super.update();
 
+        float nearest_t = Float.POSITIVE_INFINITY;
+        float top = prev_y;
         for(Tile tile : tiles) {
             // 아래로 내려가는 중에 충돌하는 경우
-            if (player.dy > 0 && player.collider.isCollide(tile.collider)) {
-                float top = tile.collider.getTop();
+            CcdResult result = player.collider.ccd(tile.collider, player.dx * GameView.frameTime, player.dy * GameView.frameTime);
+            if(player.dy > 0 && result.isCollide) {
+                if(result.t < nearest_t) {
+                    if(result.ny > 0) {
+                        nearest_t = result.t;
+                    }
+                    if(result.t == 0) {
+                        nearest_t = result.t;
+                        top = tile.collider.getTop();
+                    }
+                }
+            }
+        }
+        if(nearest_t < Float.POSITIVE_INFINITY) {
+            if(nearest_t == 0) {
                 // 이전프레임에 타일보다 위에 있던 경우
                 if (prev_y < top) {
                     player.y = top;
                     player.jump();
                 }
+            }
+            else {
+                player.y = player.y + player.dy * GameView.frameTime * nearest_t;
+                player.jump();
             }
         }
     }

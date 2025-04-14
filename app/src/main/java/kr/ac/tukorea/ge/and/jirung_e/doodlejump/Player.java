@@ -40,6 +40,10 @@ public class Player implements IGameObject {
         x += dx * GameView.frameTime;
         y += dy * GameView.frameTime;
         dy += GRAVITY * GameView.frameTime;
+        // 최고속력 제한
+        if(dy > -JUMP_SPEED) {
+            dy = -JUMP_SPEED;
+        }
         updateCollider();
         updateRect();
     }
