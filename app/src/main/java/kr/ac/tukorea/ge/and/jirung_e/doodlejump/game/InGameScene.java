@@ -33,6 +33,13 @@ public class InGameScene extends Scene {
 
         super.update();
 
+        if(player.x < 0) {
+            player.x = Metrics.width;
+        }
+        else if(player.x > Metrics.width) {
+            player.x = 0;
+        }
+
         float nearest_t = Float.POSITIVE_INFINITY;
         float top = prev_y;
         for(Tile tile : tiles) {
@@ -73,14 +80,14 @@ public class InGameScene extends Scene {
             case MotionEvent.ACTION_MOVE:
                 float[] pts = Metrics.fromScreen(event.getX(), event.getY());
                 if(pts[0] >= Metrics.width / 2) {
-                    player.setXMoveDirection(1);
+                    player.setTargetMoveDirection(1);
                 }
                 else {
-                    player.setXMoveDirection(-1);
+                    player.setTargetMoveDirection(-1);
                 }
                 return true;
             case MotionEvent.ACTION_UP:
-                player.setXMoveDirection(0);
+                player.setTargetMoveDirection(0);
                 return true;
         }
         return false;
