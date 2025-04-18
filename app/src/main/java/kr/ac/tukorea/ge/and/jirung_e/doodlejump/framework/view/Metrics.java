@@ -1,4 +1,4 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view;
 
 import android.graphics.Canvas;
 import android.graphics.Matrix;

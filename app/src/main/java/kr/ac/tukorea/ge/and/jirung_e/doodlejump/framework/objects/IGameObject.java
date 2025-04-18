@@ -1,4 +1,4 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects;
 
 import android.graphics.Canvas;
 

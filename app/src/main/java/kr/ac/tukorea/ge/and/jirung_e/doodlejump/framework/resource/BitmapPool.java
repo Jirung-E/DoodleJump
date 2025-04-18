@@ -1,4 +1,4 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import java.util.HashMap;
+
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 
 
 public class BitmapPool {

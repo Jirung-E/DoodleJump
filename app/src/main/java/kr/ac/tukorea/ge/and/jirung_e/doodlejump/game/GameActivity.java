@@ -1,4 +1,4 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -8,6 +8,9 @@ import android.view.WindowInsetsController;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene.Scene;
 
 
 public class GameActivity extends AppCompatActivity {
@@ -51,6 +54,5 @@ public class GameActivity extends AppCompatActivity {
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
             gameView.setSystemUiVisibility(flags);
         }
-
     }
 }

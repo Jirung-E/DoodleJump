@@ -1,10 +1,12 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene;
 
 import android.graphics.Canvas;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
+
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
 
 
 public class Scene {

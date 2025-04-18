@@ -6,6 +6,8 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.GameActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override

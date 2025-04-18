@@ -1,4 +1,4 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -133,15 +133,4 @@ public class BoxCollider {
     public void draw(Canvas canvas) {
         canvas.drawRect(rect, paint);
     }
-}
-
-class CcdResult {
-    boolean isCollide = false;
-
-    // 0~1, 충돌한 시간
-    float t;
-
-    // 충돌점 normal
-    float nx;
-    float ny;
 }

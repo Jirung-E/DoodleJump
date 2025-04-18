@@ -1,10 +1,9 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.Choreographer;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,6 +11,9 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.BuildConfig;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene.Scene;
 
 
 public class GameView extends View implements Choreographer.FrameCallback {

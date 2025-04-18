@@ -1,9 +1,15 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
+
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.BitmapPool;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.BoxCollider;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
 
 
 public class Tile implements IGameObject {

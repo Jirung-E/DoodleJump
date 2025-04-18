@@ -1,8 +1,15 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.RectF;
+
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.BitmapPool;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.BoxCollider;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
 
 
 public class Player implements IGameObject {
@@ -16,6 +23,7 @@ public class Player implements IGameObject {
     public BoxCollider collider;
     private static final float GRAVITY = 9.8f * WIDTH * 1.4f;
     private static final float JUMP_SPEED = -GRAVITY * 0.6f;
+    private static final float MOVE_SPEED = Metrics.width;
     private final Bitmap bitmap;
 
 
@@ -50,6 +58,14 @@ public class Player implements IGameObject {
 
     void jump() {
         dy = JUMP_SPEED;
+    }
+
+    /// 크기와 상관 없이 이동방향 설정
+    /// - 양수: 오른쪽
+    /// - 음수: 왼쪽
+    /// - 0: 정지
+    void setXMoveDirection(int dx) {
+        this.dx = Math.signum(dx) * MOVE_SPEED;
     }
 
     @Override

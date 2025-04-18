@@ -1,6 +1,13 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game;
+
+import android.view.MotionEvent;
 
 import java.util.ArrayList;
+
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene.Scene;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.CcdResult;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 
 public class InGameScene extends Scene {
     private Player player;
@@ -56,5 +63,26 @@ public class InGameScene extends Scene {
                 player.jump();
             }
         }
+    }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+                float[] pts = Metrics.fromScreen(event.getX(), event.getY());
+                if(pts[0] >= Metrics.width / 2) {
+                    player.setXMoveDirection(1);
+                }
+                else {
+                    player.setXMoveDirection(-1);
+                }
+                return true;
+            case MotionEvent.ACTION_UP:
+                player.setXMoveDirection(0);
+                return true;
+        }
+        return false;
     }
 }
