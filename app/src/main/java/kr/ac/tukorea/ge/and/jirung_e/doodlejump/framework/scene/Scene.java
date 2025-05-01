@@ -7,22 +7,80 @@ import android.view.MotionEvent;
 import java.util.ArrayList;
 
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IRecyclable;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ObjectRecycler;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 
 
 public class Scene {
     private String TAG = Scene.class.getSimpleName();
-    protected final ArrayList<IGameObject> gameObjects = new ArrayList<>();
+    protected ArrayList<ArrayList<IGameObject>> layers = new ArrayList<>();
+    private ObjectRecycler recycler = new ObjectRecycler();
 
 
-    public void update() {
-        for (IGameObject gobj : gameObjects) {
-            gobj.update();
+    protected void initLayers(int layerCount) {
+        layers.clear();
+        for (int i = 0; i < layerCount; i++) {
+            layers.add(new ArrayList<>());
+        }
+    }
+    public <E extends Enum<E>> void add(E layer, IGameObject gameObject) {
+        int layerIndex = layer.ordinal();
+        ArrayList<IGameObject> gameObjects = layers.get(layerIndex);
+        gameObjects.add(gameObject);
+    }
+
+    public void add(ILayerProvider<?> gameObject) {
+        Enum<?> e = gameObject.getLayer();
+        int layerIndex = e.ordinal();
+        ArrayList<IGameObject> gameObjects = layers.get(layerIndex);
+        gameObjects.add(gameObject);
+    }
+
+    public <E extends Enum<E>> void remove(E layer, IGameObject gobj) {
+        int layerIndex = layer.ordinal();
+        remove(layerIndex, gobj);
+    }
+
+    public void remove(ILayerProvider<?> gameObject) {
+        Enum<?> e = gameObject.getLayer();
+        int layerIndex = e.ordinal();
+        remove(layerIndex, gameObject);
+    }
+
+    private void remove(int layerIndex, IGameObject gobj) {
+        ArrayList<IGameObject> gameObjects = layers.get(layerIndex);
+        gameObjects.remove(gobj);
+        if (gobj instanceof IRecyclable) {
+            recycler.collectRecyclable((IRecyclable) gobj);
+            ((IRecyclable) gobj).onRecycle();
         }
     }
 
+    public <E extends Enum<E>> ArrayList<IGameObject> objectsAt(E layer) {
+        int layerIndex = layer.ordinal();
+        return layers.get(layerIndex);
+    }
+
+
+    public void update() {
+        for (ArrayList<IGameObject> gameObjects : layers) {
+            int count = gameObjects.size();
+            for (int i = count - 1; i >= 0; i--) {
+                IGameObject gobj = gameObjects.get(i);
+                gobj.update();
+            }
+        }
+    }
     public void draw(Canvas canvas) {
-        for (IGameObject gobj : gameObjects) {
-            gobj.draw(canvas);
+        if (this.clipsRect()) {
+            canvas.clipRect(0, 0, Metrics.width, Metrics.height);
+        }
+        for (ArrayList<IGameObject> gameObjects : layers) {
+            for (IGameObject gobj : gameObjects) {
+                gobj.draw(canvas);
+            }
         }
     }
 
@@ -45,5 +103,9 @@ public class Scene {
 
     public boolean onBackPressed() {
         return false;
+    }
+
+    public boolean clipsRect() {
+        return true;
     }
 }

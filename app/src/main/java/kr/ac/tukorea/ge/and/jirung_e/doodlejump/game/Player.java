@@ -6,14 +6,16 @@ import android.graphics.RectF;
 import android.util.Log;
 
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.BitmapPool;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sprite;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.BoxCollider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
 
 
-public class Player implements IGameObject {
+public class Player implements IGameObject, ILayerProvider<InGameLayer> {
     private static final String TAG = Player.class.getSimpleName();
     private final RectF dstRect = new RectF();
     private static final float WIDTH = Metrics.width / 9.0f * 1.8f;
@@ -29,13 +31,17 @@ public class Player implements IGameObject {
     private static final float JUMP_SPEED = -GRAVITY * 0.6f;
     private static final float MOVE_SPEED = Metrics.width;
     private static final float ACCELERATION_X = 4 * MOVE_SPEED;
-    private final Bitmap bitmap;
+    private Sprite sprite;
 
 
+    ///////////////////////////////////////// Constructors /////////////////////////////////////////
     public Player() {
-        bitmap = BitmapPool.get(R.mipmap.character_left);
+        Bitmap bitmap = BitmapPool.get(R.mipmap.character_left);
         HEIGHT = WIDTH * ((float) bitmap.getHeight() / bitmap.getWidth());
         HEIGHT_HALF = HEIGHT / 2;
+        sprite = new Sprite(bitmap);
+        sprite.setOffset(0.0f, -HEIGHT_HALF);
+        sprite.setSize(WIDTH, HEIGHT);
 
         x = Metrics.width / 2;
         y = Metrics.height;
@@ -45,10 +51,11 @@ public class Player implements IGameObject {
         collider = new BoxCollider(WIDTH_HALF, HEIGHT);
 
         updateCollider();
-        updateRect();
+        sprite.setPosition(x, y);
     }
 
 
+    //////////////////////////////////////////// Methods ///////////////////////////////////////////
     @Override
     public void update() {
         float prev_dx_sign = Math.signum(dx);
@@ -56,18 +63,19 @@ public class Player implements IGameObject {
         if(target_dx == 0 && prev_dx_sign != Math.signum(dx)) {
             dx = 0;
         }
-
         dx = Math.clamp(dx, -MOVE_SPEED, MOVE_SPEED);
-        x += dx * GameView.frameTime;
-        y += dy * GameView.frameTime;
+
         dy += GRAVITY * GameView.frameTime;
         // 최고속력 제한
         if(dy > -JUMP_SPEED) {
             dy = -JUMP_SPEED;
         }
 
+        x += dx * GameView.frameTime;
+        y += dy * GameView.frameTime;
+
         updateCollider();
-        updateRect();
+        sprite.setPosition(x, y);
     }
 
     public void jump() {
@@ -92,16 +100,18 @@ public class Player implements IGameObject {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(bitmap, null, dstRect, null);
+//        canvas.drawBitmap(bitmap, null, dstRect, null);
+        sprite.draw(canvas);
         collider.draw(canvas);
-    }
-
-    private void updateRect() {
-        dstRect.set(x - WIDTH_HALF, y - HEIGHT,
-                x + WIDTH_HALF, y);
     }
 
     private void updateCollider() {
         collider.setPosition(x, y - HEIGHT_HALF);
+    }
+
+
+    @Override
+    public InGameLayer getLayer() {
+        return InGameLayer.player;
     }
 }

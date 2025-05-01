@@ -4,6 +4,10 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IRecyclable;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ObjectRecycler;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene.Scene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.CcdResult;
@@ -11,22 +15,24 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 
 public class InGameScene extends Scene {
     private Player player;
-    private ArrayList<Tile> tiles = new ArrayList<>();
 
 
+    ///////////////////////////////////////// Constructors /////////////////////////////////////////
     public InGameScene() {
         Metrics.setGameSize(900, 1600);
+
+        initLayers(InGameLayer.COUNT);
 
         player = new Player();
 
         Tile tile = new Tile(Metrics.width / 2, Metrics.height * 0.8f);
-        tiles.add(tile);
-        gameObjects.add(tile);
+        add(tile);
 
-        gameObjects.add(player);
+        add(player);
     }
 
 
+    //////////////////////////////////////////// Methods ///////////////////////////////////////////
     @Override
     public void update() {
         float prev_y = player.y;
@@ -42,7 +48,8 @@ public class InGameScene extends Scene {
 
         float nearest_t = Float.POSITIVE_INFINITY;
         float top = prev_y;
-        for(Tile tile : tiles) {
+        for(IGameObject obj : objectsAt(InGameLayer.tile)) {
+            Tile tile = (Tile)obj;
             // 아래로 내려가는 중에 충돌하는 경우
             CcdResult result = player.collider.ccd(tile.collider, player.dx * GameView.frameTime, player.dy * GameView.frameTime);
             if(player.dy > 0 && result.isCollide) {
