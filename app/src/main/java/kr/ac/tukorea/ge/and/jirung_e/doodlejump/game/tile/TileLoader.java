@@ -1,14 +1,14 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile;
 
 import android.graphics.Canvas;
-import android.util.Log;
 
 import java.util.Random;
 
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameLayer;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameScene;
 
 public class TileLoader implements IGameObject, ILayerProvider<InGameLayer> {
     private static final String TAG = TileLoader.class.getSimpleName();
@@ -16,35 +16,47 @@ public class TileLoader implements IGameObject, ILayerProvider<InGameLayer> {
     private final InGameScene scene;
     private final Random random = new Random();
     public float y;
-    private static final float HOME_Y = -Tile.IMG_HEIGHT / 2f;
-    private final int PADDING_X;
-    private final int START_X, END_X;
-    private final int X_RANGE;
+    private static final float HOME_Y = -100f;    // 적당한 높이값으로 설정
     private final int Y_RANGE;
     /// 0(EASY)~1(HARD)
-    public float difficulty = 1;
-    private static final int MIN_DISTANCE = (int)Tile.IMG_HEIGHT * 2;
+    private float difficulty;
+    private static final int MIN_DISTANCE = 100;    // 적당한 최소거리 설정
+
 
     public TileLoader(InGameScene mainScene) {
         scene = mainScene;
         y = Metrics.height * 0.8f;
-        PADDING_X = (int)(Metrics.width * 0.01f);   // 1%
-        START_X = (int)Tile.IMG_WIDTH + PADDING_X;
-        END_X = (int)(Metrics.width - Tile.IMG_WIDTH) - PADDING_X;
-        X_RANGE = END_X - START_X;
-        Y_RANGE = (int)(Metrics.height * 0.2f);
+        Y_RANGE = (int)(Metrics.height * 0.18f);
+        difficulty = 0f;
     }
+
 
     public void update() {
         // 일정 간격마다 랜덤한 x값을 가지고 타일을 생성
         while(y > HOME_Y) {
-            Tile tile = scene.getObject(Tile.class);
-            tile.x = random.nextInt(X_RANGE) + START_X;
+            // 랜덤 타일 생성
+            Tile tile;
+            // 난이도가 0.5보다 작으면 MovingTile을 생성하지 않음
+            if(difficulty < 0.5 || random.nextBoolean()) {
+                tile = scene.getObject(NormalTile.class);
+            } else {
+                tile = scene.getObject(MovingTile.class);
+            }
+            tile.x = random.nextInt(Tile.X_RANGE) + Tile.START_X;
             tile.y = y;
             tile.update();
             scene.add(tile);
+//            y -= Y_RANGE + MIN_DISTANCE;
             y -= (int)(random.nextInt(Y_RANGE) * difficulty) + MIN_DISTANCE;
         }
+    }
+
+    public float getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(float difficulty) {
+        this.difficulty = Math.clamp(difficulty, 0f, 1f);
     }
 
     @Override

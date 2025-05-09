@@ -1,6 +1,9 @@
 package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game;
 
-import android.util.Log;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
@@ -10,10 +13,14 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene.Scene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.CcdResult;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.NormalTile;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.Tile;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.TileLoader;
 
 public class InGameScene extends Scene {
     private static final String TAG = InGameScene.class.getSimpleName();
     private Player player;
+    private float score;
     private TileLoader tileLoader;
     private final float MIN_HEIGHT;
 
@@ -30,7 +37,7 @@ public class InGameScene extends Scene {
 
         player = new Player();
 
-        Tile tile = new Tile(Metrics.width / 2, Metrics.height * 0.95f);
+        Tile tile = new NormalTile(Metrics.width / 2, Metrics.height * 0.95f);
         add(tile);
 
 //        for(int i=0; i<10; ++i) {
@@ -88,11 +95,13 @@ public class InGameScene extends Scene {
             }
         }
 
-        // 일정 높이 이상으로 올라가면 타일 등의 오브젝트를 아래로 이동시킴
+        // 일정 높이 이상으로 올라가면 타일 등의 오브젝트를 아래로 이동시킴 + 스코어 증가
         if(player.y < MIN_HEIGHT) {
             float diff = MIN_HEIGHT - player.y;
 
             player.y = MIN_HEIGHT;
+            score += diff / 10f;
+            tileLoader.setDifficulty(score / 5000.0f);
 
             tileLoader.y += diff;
 
@@ -105,6 +114,23 @@ public class InGameScene extends Scene {
                 }
             }
         }
+    }
+
+
+    private Paint scorePaint;
+    @Override
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
+
+        if (scorePaint == null) {
+            scorePaint = new Paint();
+            scorePaint.setColor(Color.BLUE);
+            scorePaint.setTypeface(Typeface.MONOSPACE);
+            scorePaint.setTextSize(32f);
+        }
+
+        canvas.drawText("SCORE: " + score, 0f, 40f, scorePaint);
+        canvas.drawText("difficulty: " + tileLoader.getDifficulty(), 0f, 80f, scorePaint);
     }
 
 
