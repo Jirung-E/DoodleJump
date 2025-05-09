@@ -19,9 +19,9 @@ public class Tile implements IGameObject, ILayerProvider<InGameLayer> {
     private static final Rect srcRect = new Rect(0, 0, 118, 33);
     private static final float IMG_WIDTH = Metrics.width / 5.4f;
     private static final float IMG_HEIGHT = IMG_WIDTH * ((float) srcRect.height() / srcRect.width());
-    private float x, y;
-    public BoxCollider collider;
     private Sprite sprite;
+    public float x, y;
+    public BoxCollider collider;
 
     public Tile(float x, float y) {
         sprite = new Sprite(R.mipmap.tiles);

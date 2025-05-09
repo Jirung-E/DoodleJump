@@ -15,18 +15,25 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 
 public class InGameScene extends Scene {
     private Player player;
+    private final float MAX_HEIGHT;
 
 
     ///////////////////////////////////////// Constructors /////////////////////////////////////////
     public InGameScene() {
         Metrics.setGameSize(900, 1600);
+        MAX_HEIGHT = Metrics.height / 2.0f;
 
         initLayers(InGameLayer.COUNT);
 
         player = new Player();
 
-        Tile tile = new Tile(Metrics.width / 2, Metrics.height * 0.8f);
-        add(tile);
+//        Tile tile = new Tile(Metrics.width / 2, Metrics.height * 0.8f);
+//        add(tile);
+
+        for(int i=0; i<10; ++i) {
+            Tile tile = new Tile(Metrics.width / 2, Metrics.height * 0.8f - i * 200);
+            add(tile);
+        }
 
         add(player);
     }
@@ -75,6 +82,21 @@ public class InGameScene extends Scene {
             else {
                 player.y = player.y + player.dy * GameView.frameTime * nearest_t;
                 player.jump();
+            }
+        }
+
+        // 일정 높이 이상으로 올라가면 타일 등의 오브젝트를 아래로 이동시킴
+        if(player.y < MAX_HEIGHT) {
+            float diff = MAX_HEIGHT - player.y;
+            player.y = MAX_HEIGHT;
+
+            ArrayList<IGameObject> tiles = objectsAt(InGameLayer.tile);
+            for(int i=tiles.size()-1; i>=0; --i) {
+                Tile tile = (Tile)(tiles.get(i));
+                tile.y += diff;
+                if(tile.collider.getTop() > Metrics.height) {
+                    remove(tile);
+                }
             }
         }
     }

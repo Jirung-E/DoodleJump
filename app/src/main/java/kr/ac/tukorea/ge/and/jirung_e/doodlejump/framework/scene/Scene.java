@@ -63,6 +63,28 @@ public class Scene {
         return layers.get(layerIndex);
     }
 
+    public int count() {
+        int total = 0;
+        for (ArrayList<IGameObject> layer : layers) {
+            total += layer.size();
+        }
+        return total;
+    }
+
+    public String getDebugCounts() {
+        StringBuilder sb = new StringBuilder();
+        for (ArrayList<IGameObject> gameObjects : layers) {
+            if (sb.length() == 0) {
+                sb.append('[');
+            } else {
+                sb.append(',');
+            }
+            sb.append(gameObjects.size());
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+
 
     public void update() {
         for (ArrayList<IGameObject> gameObjects : layers) {
