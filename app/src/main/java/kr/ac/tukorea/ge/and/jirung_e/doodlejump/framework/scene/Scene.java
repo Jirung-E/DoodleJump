@@ -14,9 +14,9 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 
 
 public class Scene {
-    private String TAG = Scene.class.getSimpleName();
+    private static final String TAG = Scene.class.getSimpleName();
     protected ArrayList<ArrayList<IGameObject>> layers = new ArrayList<>();
-    private ObjectRecycler recycler = new ObjectRecycler();
+    private final ObjectRecycler recycler = new ObjectRecycler();
 
 
     protected void initLayers(int layerCount) {
@@ -83,6 +83,11 @@ public class Scene {
         }
         sb.append(']');
         return sb.toString();
+    }
+
+
+    public <T extends IRecyclable> T getObject(Class<T> clazz) {
+        return recycler.getRecyclable(clazz);
     }
 
 

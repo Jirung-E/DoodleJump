@@ -1,39 +1,42 @@
 package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game;
 
+import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IRecyclable;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ObjectRecycler;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene.Scene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.CcdResult;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 
 public class InGameScene extends Scene {
+    private static final String TAG = InGameScene.class.getSimpleName();
     private Player player;
-    private final float MAX_HEIGHT;
+    private TileLoader tileLoader;
+    private final float MIN_HEIGHT;
 
 
     ///////////////////////////////////////// Constructors /////////////////////////////////////////
     public InGameScene() {
         Metrics.setGameSize(900, 1600);
-        MAX_HEIGHT = Metrics.height / 2.0f;
+        MIN_HEIGHT = Metrics.height / 2.0f;
 
         initLayers(InGameLayer.COUNT);
 
+        tileLoader = new TileLoader(this);
+        add(tileLoader);
+
         player = new Player();
 
-//        Tile tile = new Tile(Metrics.width / 2, Metrics.height * 0.8f);
-//        add(tile);
+        Tile tile = new Tile(Metrics.width / 2, Metrics.height * 0.95f);
+        add(tile);
 
-        for(int i=0; i<10; ++i) {
-            Tile tile = new Tile(Metrics.width / 2, Metrics.height * 0.8f - i * 200);
-            add(tile);
-        }
+//        for(int i=0; i<10; ++i) {
+//            Tile tile = new Tile(Metrics.width / 2, Metrics.height * 0.8f - i * 200);
+//            add(tile);
+//        }
 
         add(player);
     }
@@ -74,7 +77,7 @@ public class InGameScene extends Scene {
         if(nearest_t < Float.POSITIVE_INFINITY) {
             if(nearest_t == 0) {
                 // 이전프레임에 타일보다 위에 있던 경우
-                if (prev_y < top) {
+                if (prev_y <= top) {
                     player.y = top;
                     player.jump();
                 }
@@ -86,9 +89,12 @@ public class InGameScene extends Scene {
         }
 
         // 일정 높이 이상으로 올라가면 타일 등의 오브젝트를 아래로 이동시킴
-        if(player.y < MAX_HEIGHT) {
-            float diff = MAX_HEIGHT - player.y;
-            player.y = MAX_HEIGHT;
+        if(player.y < MIN_HEIGHT) {
+            float diff = MIN_HEIGHT - player.y;
+
+            player.y = MIN_HEIGHT;
+
+            tileLoader.y += diff;
 
             ArrayList<IGameObject> tiles = objectsAt(InGameLayer.tile);
             for(int i=tiles.size()-1; i>=0; --i) {

@@ -7,6 +7,7 @@ import android.graphics.RectF;
 
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IRecyclable;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.BitmapPool;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sprite;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
@@ -14,16 +15,26 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.BoxCollider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
 
 
-public class Tile implements IGameObject, ILayerProvider<InGameLayer> {
+public class Tile implements IGameObject, ILayerProvider<InGameLayer>, IRecyclable {
     private final RectF dstRect = new RectF();
     private static final Rect srcRect = new Rect(0, 0, 118, 33);
-    private static final float IMG_WIDTH = Metrics.width / 5.4f;
-    private static final float IMG_HEIGHT = IMG_WIDTH * ((float) srcRect.height() / srcRect.width());
+    public static final float IMG_WIDTH = Metrics.width / 5.4f;
+    public static final float IMG_HEIGHT = IMG_WIDTH * ((float) srcRect.height() / srcRect.width());
     private Sprite sprite;
     public float x, y;
     public BoxCollider collider;
 
+
+    public Tile() {
+        init(0, 0);
+    }
+
     public Tile(float x, float y) {
+        init(x, y);
+    }
+
+
+    private void init(float x, float y) {
         sprite = new Sprite(R.mipmap.tiles);
         sprite.setSrcRect(0, 0, 118, 33);
         sprite.setSize(IMG_WIDTH, IMG_HEIGHT);
@@ -59,5 +70,10 @@ public class Tile implements IGameObject, ILayerProvider<InGameLayer> {
     @Override
     public InGameLayer getLayer() {
         return InGameLayer.tile;
+    }
+
+    @Override
+    public void onRecycle() {
+
     }
 }
