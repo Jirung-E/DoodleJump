@@ -2,8 +2,9 @@ package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.RectF;
 import android.util.Log;
+
+import java.util.HashMap;
 
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider;
@@ -17,7 +18,6 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
 
 public class Player implements IGameObject, ILayerProvider<InGameLayer> {
     private static final String TAG = Player.class.getSimpleName();
-    private final RectF dstRect = new RectF();
     private static final float WIDTH = Metrics.width / 9.0f * 1.8f;
     private static final float WIDTH_HALF = WIDTH / 2;
     private final float HEIGHT;
@@ -32,16 +32,44 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
     private static final float MOVE_SPEED = Metrics.width;
     private static final float ACCELERATION_X = 4 * MOVE_SPEED;
     private Sprite sprite;
+    private HashMap<Action, Sprite> sprites;
+
+    enum Action {
+        LEFT, RIGHT, LEFT_CROUCH, RIGHT_CROUCH,
+    }
+    private Action action;
+    private static final float crouchTimeMax = 0.5f;
+    private float crouchTime;
 
 
     ///////////////////////////////////////// Constructors /////////////////////////////////////////
     public Player() {
+        sprites = new HashMap<>();
+
         Bitmap bitmap = BitmapPool.get(R.mipmap.character_left);
         HEIGHT = WIDTH * ((float) bitmap.getHeight() / bitmap.getWidth());
         HEIGHT_HALF = HEIGHT / 2;
+
         sprite = new Sprite(bitmap);
         sprite.setOffset(0.0f, -HEIGHT_HALF);
         sprite.setSize(WIDTH, HEIGHT);
+        sprites.put(Action.LEFT, sprite);
+
+        sprite = new Sprite(R.mipmap.character_left_crouch);
+        sprite.setOffset(0.0f, -HEIGHT_HALF * 1.12f);
+        sprite.setSize(WIDTH, HEIGHT);
+        sprites.put(Action.LEFT_CROUCH, sprite);
+
+        sprite = new Sprite(R.mipmap.character_right);
+        sprite.setOffset(0.0f, -HEIGHT_HALF);
+        sprite.setSize(WIDTH, HEIGHT);
+        sprites.put(Action.RIGHT, sprite);
+
+        sprite = new Sprite(R.mipmap.character_right_crouch);
+        sprite.setOffset(0.0f, -HEIGHT_HALF * 1.12f);
+        sprite.setSize(WIDTH, HEIGHT);
+        sprites.put(Action.RIGHT_CROUCH, sprite);
+        action = Action.RIGHT_CROUCH;
 
         x = Metrics.width / 2;
         y = Metrics.height;
@@ -75,19 +103,20 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
         y += dy * GameView.frameTime;
 
         updateCollider();
-        sprite.setPosition(x, y);
+        updateSprite();
     }
 
     public void jump() {
         dy = JUMP_SPEED;
-    }
-
-    /// 크기와 상관 없이 이동방향 설정
-    /// - 양수: 오른쪽
-    /// - 음수: 왼쪽
-    /// - 0: 정지
-    public void setXMoveDirection(int dx) {
-        this.dx = Math.signum(dx) * MOVE_SPEED;
+        if(action == Action.LEFT) {
+            action = Action.LEFT_CROUCH;
+        }
+        else if(action == Action.RIGHT) {
+            action = Action.RIGHT_CROUCH;
+        }
+        sprite = sprites.get(action);
+        sprite.setPosition(x, y);
+        crouchTime = 0;
     }
 
     /// 크기와 상관 없이 이동방향 설정
@@ -95,18 +124,48 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
     /// - 음수: 왼쪽
     /// - 0: 정지
     public void setTargetMoveDirection(int dx) {
-        this.target_dx = Math.signum(dx) * MOVE_SPEED;
+        target_dx = Math.signum(dx) * MOVE_SPEED;
+        if(crouchTime < crouchTimeMax) {
+            if (dx < 0) {
+                action = Action.LEFT_CROUCH;
+            } else if (dx > 0) {
+                action = Action.RIGHT_CROUCH;
+            }
+        }
+        else {
+            if (dx < 0) {
+                action = Action.LEFT;
+            } else if (dx > 0) {
+                action = Action.RIGHT;
+            }
+        }
+        sprite = sprites.get(action);
+        sprite.setPosition(x, y);
     }
 
     @Override
     public void draw(Canvas canvas) {
-//        canvas.drawBitmap(bitmap, null, dstRect, null);
         sprite.draw(canvas);
         collider.draw(canvas);
     }
 
     private void updateCollider() {
         collider.setPosition(x, y - HEIGHT_HALF);
+    }
+
+    private void updateSprite() {
+        crouchTime += GameView.frameTime;
+        if(crouchTime >= crouchTimeMax) {
+            if(action == Action.LEFT_CROUCH) {
+                action = Action.LEFT;
+            }
+            else if(action == Action.RIGHT_CROUCH) {
+                action = Action.RIGHT;
+            }
+            sprite = sprites.get(action);
+        }
+
+        sprite.setPosition(x, y);
     }
 
 
