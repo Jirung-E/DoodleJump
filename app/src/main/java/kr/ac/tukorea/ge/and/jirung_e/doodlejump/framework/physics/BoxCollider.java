@@ -4,11 +4,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.util.Log;
+
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.util.RectUtil;
 
 
 public class BoxCollider {
     private RectF rect;
     private static final Paint paint = new Paint();
+    public boolean isActive = true;
 
 
     public BoxCollider(float width, float height) {
@@ -43,12 +47,24 @@ public class BoxCollider {
         rect.bottom = y + height / 2;
     }
 
+    public void setSize(float width, float height) {
+        RectUtil.setRect(rect, width, height);
+    }
+
     public boolean isCollide(BoxCollider other) {
+        if(!isActive || !other.isActive) {
+            return false;
+        }
         return RectF.intersects(this.rect, other.rect);
     }
 
+    /// 정확하지 않음
     public CcdResult ccd(BoxCollider other, float dx, float dy) {
         CcdResult result = new CcdResult();
+
+        if(!isActive || !other.isActive) {
+            return result;
+        }
 
         if(isCollide(other)) {
             result.isCollide = true;
@@ -102,9 +118,16 @@ public class BoxCollider {
 
         boolean validX = (0 <= tx && tx <= 1) || dx == 0;
         boolean validY = (0 <= ty && ty <= 1) || dy == 0;
+//
+//        if(!validX || !validY) {
+//            return result;
+//        }
 
-        if(!validX || !validY) {
-            return result;
+        if(tx == Float.POSITIVE_INFINITY) {
+            tx = 0;
+        }
+        if(ty == Float.POSITIVE_INFINITY) {
+            ty = 0;
         }
 
         result.isCollide = true;
@@ -131,6 +154,12 @@ public class BoxCollider {
     }
 
     public void draw(Canvas canvas) {
+        if(isActive) {
+            paint.setColor(Color.GREEN);
+        }
+        else {
+            paint.setColor(Color.RED);
+        }
         canvas.drawRect(rect, paint);
     }
 }

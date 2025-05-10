@@ -107,7 +107,11 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
     }
 
     public void jump() {
-        dy = JUMP_SPEED;
+        jump(1.0f);
+    }
+
+    public void jump(float power) {
+        dy = JUMP_SPEED * power;
         if(action == Action.LEFT) {
             action = Action.LEFT_CROUCH;
         }

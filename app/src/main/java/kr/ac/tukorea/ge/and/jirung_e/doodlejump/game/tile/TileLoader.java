@@ -46,7 +46,15 @@ public class TileLoader implements IGameObject, ILayerProvider<InGameLayer> {
             tile.y = y;
             tile.update();
             scene.add(tile);
-//            y -= Y_RANGE + MIN_DISTANCE;
+
+            if(random.nextInt(10) == 0) {
+                // 10% 확률로 Spring 생성
+                Spring spring = scene.getObject(Spring.class);
+                spring.setParent(tile);
+                spring.update();
+                scene.add(spring);
+            }
+
             y -= (int)(random.nextInt(Y_RANGE) * difficulty) + MIN_DISTANCE;
         }
     }
