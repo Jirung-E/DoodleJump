@@ -59,14 +59,10 @@ public class InGameScene extends Scene {
             if(player.dy > 0) {
                 CcdResult result = player.collider.ccd(tile.collider, player.dx * GameView.frameTime, player.dy * GameView.frameTime);
                 if(result.isCollide) {
-                    Log.d(TAG, "collided: nx=" + result.nx + ", ny=" + result.ny + ", t=" + result.t);
                     if (-0.1f <= result.t && result.t < nearest_t) {
                         if (result.ny < 0) {
-                            Log.d(TAG, "jumpable");
                             nearest_t = result.t;
                             collidee = tile;
-                        } else {
-                            Log.d(TAG, "not jumpable");
                         }
                     }
                 }
@@ -96,7 +92,6 @@ public class InGameScene extends Scene {
         }
         if(nearest_t < Float.POSITIVE_INFINITY) {
             if(collidee instanceof Tile) {
-                Log.d(TAG, "jump");
                 player.y = player.y + player.dy * GameView.frameTime * nearest_t;
                 player.jump();
             }
