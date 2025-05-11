@@ -1,12 +1,10 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item;
 
 import android.graphics.Rect;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameLayer;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.Item;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.Tile;
 
 public class Spring extends Item {
     private static final String TAG = Spring.class.getSimpleName();
@@ -15,7 +13,6 @@ public class Spring extends Item {
             new Rect(807, 230, 843, 285),
     };
     private Tile parent;
-
 
 
     public Spring() {

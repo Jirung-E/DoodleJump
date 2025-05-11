@@ -1,4 +1,4 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -11,6 +11,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IRecyclable;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.BoxCollider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sprite;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameLayer;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.Tile;
 
 public abstract class Item implements IGameObject, ILayerProvider<InGameLayer>, IRecyclable {

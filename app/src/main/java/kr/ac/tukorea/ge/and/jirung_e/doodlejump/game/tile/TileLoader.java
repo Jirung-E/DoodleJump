@@ -9,6 +9,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameLayer;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameScene;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Spring;
 
 public class TileLoader implements IGameObject, ILayerProvider<InGameLayer> {
     private static final String TAG = TileLoader.class.getSimpleName();

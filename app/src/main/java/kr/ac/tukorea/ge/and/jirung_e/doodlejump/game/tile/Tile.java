@@ -2,7 +2,6 @@ package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.util.Log;
 
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider;
@@ -12,7 +11,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.BoxCollider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameLayer;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.Item;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Item;
 
 
 public abstract class Tile implements IGameObject, ILayerProvider<InGameLayer>, IRecyclable {
