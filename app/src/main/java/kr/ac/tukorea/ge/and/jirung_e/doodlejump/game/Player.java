@@ -27,8 +27,7 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
     private float target_dx;
 
     public BoxCollider collider;
-    private static final float GRAVITY = 9.8f * WIDTH * 1.4f;
-    private static final float JUMP_SPEED = -GRAVITY * 0.6f;
+    private static final float JUMP_SPEED = -InGameScene.GRAVITY * 0.6f;
     private static final float MOVE_SPEED = Metrics.width;
     private static final float ACCELERATION_X = 4 * MOVE_SPEED;
     private Sprite sprite;
@@ -93,7 +92,7 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
         }
         dx = Math.clamp(dx, -MOVE_SPEED, MOVE_SPEED);
 
-        dy += GRAVITY * GameView.frameTime;
+        dy += InGameScene.GRAVITY * GameView.frameTime;
         // 최고속력 제한
         if(dy > -JUMP_SPEED) {
             dy = -JUMP_SPEED;

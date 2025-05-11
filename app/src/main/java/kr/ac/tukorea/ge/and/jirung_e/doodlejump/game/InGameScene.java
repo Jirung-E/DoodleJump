@@ -14,6 +14,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene.Scene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.CcdResult;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Item;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.BrokenTile;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.NormalTile;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Spring;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.Tile;
@@ -25,6 +26,7 @@ public class InGameScene extends Scene {
     private float score;
     private TileLoader tileLoader;
     private final float MIN_HEIGHT;
+    public static final float GRAVITY = 9.8f * 256f;
 
 
     ///////////////////////////////////////// Constructors /////////////////////////////////////////
@@ -89,8 +91,14 @@ public class InGameScene extends Scene {
         }
         if(nearest_t < Float.POSITIVE_INFINITY) {
             if(collidee instanceof Tile) {
-                player.y = player.y + player.dy * GameView.frameTime * nearest_t;
-                player.jump();
+                // 여러개 겹쳐있는 경우 하나만 처리하게 되지만, 겹쳐있게 만들지 않을거임
+                if(collidee instanceof BrokenTile) {
+                    ((BrokenTile)collidee).trigger();
+                }
+                else {
+                    player.y = player.y + player.dy * GameView.frameTime * nearest_t;
+                    player.jump();
+                }
             }
             else if(collidee instanceof Spring) {
                 player.y = player.y + player.dy * GameView.frameTime * nearest_t;

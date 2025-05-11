@@ -38,30 +38,29 @@ public abstract class Tile implements IGameObject, ILayerProvider<InGameLayer>, 
 
 
     protected void init(float x, float y) {
-        init(x, y, 1);
-    }
-
-    protected void init(float x, float y, float size) {
-        sprite = new Sprite(R.mipmap.tiles);
-
-        float WIDTH = DEFAULT_WIDTH * size;
-
-        Rect srcRect = getSrcRect();
-        float IMG_HEIGHT = WIDTH * ((float) srcRect.height() / srcRect.width());
-        offsetY = IMG_HEIGHT / 2;
-
-        sprite.setSrcRect(srcRect.left, srcRect.top, srcRect.right, srcRect.bottom);
-        sprite.setSize(WIDTH, IMG_HEIGHT);
-        sprite.setOffset(0.0f, offsetY);
-        updateSprite();
-
         this.x = x;
         this.y = y;
-        collider = new BoxCollider(WIDTH, IMG_HEIGHT);
-        updateCollider();
+
+        sprite = new Sprite(R.mipmap.tiles);
+        collider = new BoxCollider(0, 0);
+
+        setSrcRect();
     }
 
     protected abstract Rect getSrcRect();
+    protected void setSrcRect() {
+        Rect srcRect = getSrcRect();
+        float IMG_HEIGHT = DEFAULT_WIDTH * ((float) srcRect.height() / srcRect.width());
+        offsetY = IMG_HEIGHT / 2;
+
+        sprite.setSrcRect(srcRect.left, srcRect.top, srcRect.right, srcRect.bottom);
+        sprite.setSize(DEFAULT_WIDTH, IMG_HEIGHT);
+        sprite.setOffset(0.0f, offsetY);
+        updateSprite();
+
+        collider.setSize(DEFAULT_WIDTH, IMG_HEIGHT);
+        updateCollider();
+    }
 
 
     @Override

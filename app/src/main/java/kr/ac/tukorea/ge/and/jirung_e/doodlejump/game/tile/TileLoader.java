@@ -56,6 +56,15 @@ public class TileLoader implements IGameObject, ILayerProvider<InGameLayer> {
                 scene.add(spring);
             }
 
+            if(random.nextInt(2) == 0) {
+                // 50% 확률로 BrokenTile 생성
+                Tile brokenTile = scene.getObject(BrokenTile.class);
+                brokenTile.x = random.nextInt(Tile.X_RANGE) + Tile.START_X;
+                brokenTile.y = y;
+                brokenTile.update();
+                scene.add(brokenTile);
+            }
+
             y -= (int)(random.nextInt(Y_RANGE) * difficulty) + MIN_DISTANCE;
         }
     }

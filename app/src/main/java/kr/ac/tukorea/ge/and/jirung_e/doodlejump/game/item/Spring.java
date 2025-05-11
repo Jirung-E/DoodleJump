@@ -9,8 +9,8 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.Tile;
 public class Spring extends Item {
     private static final String TAG = Spring.class.getSimpleName();
     protected static final Rect[] srcRect = {
-            new Rect(807, 198, 843, 221),
-            new Rect(807, 230, 843, 285),
+        new Rect(807, 198, 843, 221),
+        new Rect(807, 230, 843, 285),
     };
     private Tile parent;
 

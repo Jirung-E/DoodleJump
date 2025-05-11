@@ -25,7 +25,6 @@ public class MovingTile extends Tile {
 
     @Override
     public void update() {
-        super.update();
         x += SPEED * dx * GameView.frameTime;
         if (x >= Tile.END_X) {
             x -= (x - Tile.END_X);
@@ -34,6 +33,7 @@ public class MovingTile extends Tile {
             x -= (x - Tile.START_X);
             dx = 1;
         }
+        super.update();
     }
 
 
