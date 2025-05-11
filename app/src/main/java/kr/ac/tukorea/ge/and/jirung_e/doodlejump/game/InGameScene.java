@@ -71,22 +71,19 @@ public class InGameScene extends Scene {
         for(IGameObject obj : objectsAt(InGameLayer.item)) {
             Item item = (Item)obj;
             CcdResult result = player.collider.ccd(item.collider, player.dx * GameView.frameTime, player.dy * GameView.frameTime);
-            if(player.dy > 0 && result.isCollide) {
-                if(item instanceof Spring) {
-                    if(result.t == 0) {
-                        if(item.collider.getTop() < prev_y) {
-                            continue;
+            if(player.dy > 0) {
+                if(result.isCollide) {
+                    if(item instanceof Spring) {
+                        if (-0.1f <= result.t && result.t < nearest_t) {
+                            if (result.ny < 0) {
+                                nearest_t = result.t;
+                                collidee = item;
+                            }
                         }
                     }
-                    if(result.t < nearest_t) {
-                        if(result.ny < 0) {
-                            nearest_t = result.t;
-                            collidee = item;
-                        }
+                    else {
+                        // 아이템 충돌 처리
                     }
-                }
-                else {
-                    // 아이템 충돌 처리
                 }
             }
         }
@@ -98,7 +95,7 @@ public class InGameScene extends Scene {
             else if(collidee instanceof Spring) {
                 player.y = player.y + player.dy * GameView.frameTime * nearest_t;
                 player.jump(2);
-                ((Spring)collidee).collider.isActive = false;
+                ((Spring)collidee).trigger();
             }
 //            else if(collidee instanceof Item) {
 //                ((Item)collidee).onCollision(player);

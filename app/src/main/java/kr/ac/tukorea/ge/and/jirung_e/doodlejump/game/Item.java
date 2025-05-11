@@ -34,7 +34,13 @@ public abstract class Item implements IGameObject, ILayerProvider<InGameLayer>, 
         this.parent = parent;
 
         sprite = new Sprite(R.mipmap.tiles);
+        collider = new BoxCollider(0, 0);
 
+        setSrcRect();
+    }
+
+    protected abstract Rect getSrcRect();
+    protected void setSrcRect() {
         // 타일 사이즈를 기준으로 아이템 사이즈 설정
         float WIDTH = Tile.DEFAULT_WIDTH * getSize();
 
@@ -47,11 +53,9 @@ public abstract class Item implements IGameObject, ILayerProvider<InGameLayer>, 
         sprite.setOffset(0.0f, offsetY);
         updateSprite();
 
-        collider = new BoxCollider(WIDTH, IMG_HEIGHT);
+        collider.setSize(WIDTH, IMG_HEIGHT);
         updateCollider();
     }
-
-    protected abstract Rect getSrcRect();
     protected abstract float getSize();
 
 

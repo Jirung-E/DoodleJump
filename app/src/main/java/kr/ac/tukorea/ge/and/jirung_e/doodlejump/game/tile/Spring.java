@@ -10,8 +10,12 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.Item;
 
 public class Spring extends Item {
     private static final String TAG = Spring.class.getSimpleName();
-    protected static final Rect srcRect = new Rect(807, 198, 843, 221);
+    protected static final Rect[] srcRect = {
+            new Rect(807, 198, 843, 221),
+            new Rect(807, 230, 843, 285),
+    };
     private Tile parent;
+
 
 
     public Spring() {
@@ -32,9 +36,25 @@ public class Spring extends Item {
         super.update();
     }
 
+    public void trigger() {
+        if(collider != null) {
+            collider.isActive = false;
+            setSrcRect();
+        }
+    }
+
     @Override
     protected Rect getSrcRect() {
-        return srcRect;
+        if(collider == null) {
+            return srcRect[0];
+        }
+
+        if(collider.isActive) {
+            return srcRect[0];
+        }
+        else {
+            return srcRect[1];
+        }
     }
 
     @Override
@@ -46,5 +66,6 @@ public class Spring extends Item {
     public void onRecycle() {
         super.onRecycle();
         collider.isActive = true;
+        setSrcRect();
     }
 }
