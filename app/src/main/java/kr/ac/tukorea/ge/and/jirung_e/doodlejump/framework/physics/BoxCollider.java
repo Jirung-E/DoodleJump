@@ -58,17 +58,11 @@ public class BoxCollider {
         return RectF.intersects(this.rect, other.rect);
     }
 
-    /// 정확하지 않음
+
     public CcdResult ccd(BoxCollider other, float dx, float dy) {
         CcdResult result = new CcdResult();
 
         if(!isActive || !other.isActive) {
-            return result;
-        }
-
-        if(isCollide(other)) {
-            result.isCollide = true;
-            result.t = 0;
             return result;
         }
 
@@ -90,57 +84,52 @@ public class BoxCollider {
             return result;
         }
 
-        // 충돌하는 경우
-        float distX = 0;
-        float distY = 0;
-        if(dx > 0) {
-            distX = other.rect.left - rect.right;
+        // 각 축에 대해 충돌시간의 범위를 계산
+        float tx_min = Float.NEGATIVE_INFINITY;
+        float tx_max = Float.POSITIVE_INFINITY;
+        float ty_min = Float.NEGATIVE_INFINITY;
+        float ty_max = Float.POSITIVE_INFINITY;
+
+        // dx, dy가 0인 경우에는 해당 축은 무조건 충돌함(swept에서 검사 완료)
+        if(dx != 0.0) {
+            if(dx > 0.0) {
+                tx_min = (other.rect.left - rect.right) / dx;
+                tx_max = (other.rect.right - rect.left) / dx;
+            }
+            else {
+                tx_min = (other.rect.right - rect.left) / dx;
+                tx_max = (other.rect.left - rect.right) / dx;
+            }
         }
-        else {
-            distX = other.rect.right - rect.left;
-        }
-        if(dy > 0) {
-            distY = other.rect.top - rect.bottom;
-        }
-        else {
-            distY = other.rect.bottom - rect.top;
+        if(dy != 0.0) {
+            if(dy > 0.0) {
+                ty_min = (other.rect.top - rect.bottom) / dy;
+                ty_max = (other.rect.bottom - rect.top) / dy;
+            }
+            else {
+                ty_min = (other.rect.bottom - rect.top) / dy;
+                ty_max = (other.rect.top - rect.bottom) / dy;
+            }
         }
 
-        float tx = Float.POSITIVE_INFINITY;
-        float ty = Float.POSITIVE_INFINITY;
-
-        if (dx != 0) {
-            tx = distX / dx;
-        }
-        if (dy != 0) {
-            ty = distY / dy;
+        // 충돌 시간 범위의 교차점을 계산
+        float t_min = Math.max(tx_min, ty_min);
+        float t_max = Math.min(tx_max, ty_max);
+        if(t_min > t_max || t_min > 1.0 || t_max <= 0.0) {
+            return result;
         }
 
-        boolean validX = (0 <= tx && tx <= 1) || dx == 0;
-        boolean validY = (0 <= ty && ty <= 1) || dy == 0;
-//
-//        if(!validX || !validY) {
-//            return result;
-//        }
+        // 최초 충돌 시간
+        result.t = t_min;
 
-        if(tx == Float.POSITIVE_INFINITY) {
-            tx = 0;
+        if(t_min == tx_min) {
+            result.nx = -Math.signum(dx);
         }
-        if(ty == Float.POSITIVE_INFINITY) {
-            ty = 0;
+        if(t_min == ty_min) {
+            result.ny = -Math.signum(dy);
         }
 
         result.isCollide = true;
-        if(tx > ty) {
-            result.t = tx;
-            result.nx = distX > 0 ? -1 : 1;
-            result.ny = 0;
-        }
-        else {
-            result.t = ty;
-            result.nx = 0;
-            result.ny = distY > 0 ? -1 : 1;
-        }
 
         return result;
     }

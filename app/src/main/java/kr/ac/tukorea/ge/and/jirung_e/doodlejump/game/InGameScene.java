@@ -56,17 +56,18 @@ public class InGameScene extends Scene {
         for(IGameObject obj : objectsAt(InGameLayer.tile)) {
             Tile tile = (Tile)obj;
             // 아래로 내려가는 중에 충돌하는 경우
-            CcdResult result = player.collider.ccd(tile.collider, player.dx * GameView.frameTime, player.dy * GameView.frameTime);
-            if(player.dy > 0 && result.isCollide) {
-                if(result.t == 0) {
-                    if(tile.collider.getTop() < prev_y) {
-                        continue;
-                    }
-                }
-                if(result.t < nearest_t) {
-                    if(result.ny < 0) {
-                        nearest_t = result.t;
-                        collidee = tile;
+            if(player.dy > 0) {
+                CcdResult result = player.collider.ccd(tile.collider, player.dx * GameView.frameTime, player.dy * GameView.frameTime);
+                if(result.isCollide) {
+                    Log.d(TAG, "collided: nx=" + result.nx + ", ny=" + result.ny + ", t=" + result.t);
+                    if (-0.1f <= result.t && result.t < nearest_t) {
+                        if (result.ny < 0) {
+                            Log.d(TAG, "jumpable");
+                            nearest_t = result.t;
+                            collidee = tile;
+                        } else {
+                            Log.d(TAG, "not jumpable");
+                        }
                     }
                 }
             }
@@ -75,21 +76,27 @@ public class InGameScene extends Scene {
             Item item = (Item)obj;
             CcdResult result = player.collider.ccd(item.collider, player.dx * GameView.frameTime, player.dy * GameView.frameTime);
             if(player.dy > 0 && result.isCollide) {
-                if(result.t == 0) {
-                    if(item.collider.getTop() < prev_y) {
-                        continue;
+                if(item instanceof Spring) {
+                    if(result.t == 0) {
+                        if(item.collider.getTop() < prev_y) {
+                            continue;
+                        }
+                    }
+                    if(result.t < nearest_t) {
+                        if(result.ny < 0) {
+                            nearest_t = result.t;
+                            collidee = item;
+                        }
                     }
                 }
-                if(result.t < nearest_t) {
-                    if(result.ny < 0) {
-                        nearest_t = result.t;
-                        collidee = item;
-                    }
+                else {
+                    // 아이템 충돌 처리
                 }
             }
         }
         if(nearest_t < Float.POSITIVE_INFINITY) {
             if(collidee instanceof Tile) {
+                Log.d(TAG, "jump");
                 player.y = player.y + player.dy * GameView.frameTime * nearest_t;
                 player.jump();
             }
