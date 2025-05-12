@@ -7,6 +7,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IRecyclable;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sprite;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.BoxCollider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
@@ -72,7 +73,9 @@ public abstract class Tile implements IGameObject, ILayerProvider<InGameLayer>, 
     @Override
     public void draw(Canvas canvas) {
         sprite.draw(canvas);
-        collider.draw(canvas);
+        if(GameView.drawsDebugStuffs) {
+            collider.draw(canvas);
+        }
     }
 
     protected void updateCollider() {

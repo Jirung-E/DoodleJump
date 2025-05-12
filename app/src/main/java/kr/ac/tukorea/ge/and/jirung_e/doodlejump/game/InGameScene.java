@@ -164,8 +164,10 @@ public class InGameScene extends Scene {
             scorePaint.setTextSize(32f);
         }
 
-        canvas.drawText("SCORE: " + score, 0f, 40f, scorePaint);
-        canvas.drawText("difficulty: " + tileLoader.getDifficulty(), 0f, 80f, scorePaint);
+        if(GameView.drawsDebugStuffs) {
+            canvas.drawText("SCORE: " + score, 0f, 40f, scorePaint);
+            canvas.drawText("difficulty: " + tileLoader.getDifficulty(), 0f, 80f, scorePaint);
+        }
     }
 
 

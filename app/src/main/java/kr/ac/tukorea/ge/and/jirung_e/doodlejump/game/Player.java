@@ -149,7 +149,9 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
     @Override
     public void draw(Canvas canvas) {
         sprite.draw(canvas);
-        collider.draw(canvas);
+        if(GameView.drawsDebugStuffs) {
+            collider.draw(canvas);
+        }
     }
 
     private void updateCollider() {

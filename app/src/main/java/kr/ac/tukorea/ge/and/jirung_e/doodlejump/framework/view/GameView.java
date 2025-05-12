@@ -22,6 +22,7 @@ public class GameView extends View implements Choreographer.FrameCallback {
     private static long previousNanos;
     public static float frameTime;
     public static GameView view;
+    public static boolean drawsDebugStuffs = false;
     private ArrayList<Scene> sceneStack = new ArrayList<>();
     public interface OnEmptyStackListener {
         public void onEmptyStack();
@@ -103,7 +104,7 @@ public class GameView extends View implements Choreographer.FrameCallback {
         canvas.save();
         Metrics.concat(canvas);
 
-        if (BuildConfig.DEBUG) {
+        if (drawsDebugStuffs) {
             drawDebugBackground(canvas);
         }
 
@@ -113,7 +114,7 @@ public class GameView extends View implements Choreographer.FrameCallback {
         }
 
         canvas.restore();
-        if (BuildConfig.DEBUG) {
+        if (drawsDebugStuffs) {
             drawDebugInfo(canvas, scene);
         }
     }
