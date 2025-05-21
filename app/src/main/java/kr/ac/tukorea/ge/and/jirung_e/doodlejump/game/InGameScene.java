@@ -14,6 +14,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene.Scene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.CcdResult;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Item;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Jetpack;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.BrokenTile;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.NormalTile;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Spring;
@@ -73,18 +74,19 @@ public class InGameScene extends Scene {
         for(IGameObject obj : objectsAt(InGameLayer.item)) {
             Item item = (Item)obj;
             CcdResult result = player.collider.ccd(item.collider, player.dx * GameView.frameTime, player.dy * GameView.frameTime);
-            if(player.dy > 0) {
-                if(result.isCollide) {
-                    if(item instanceof Spring) {
-                        if (-0.1f <= result.t && result.t < nearest_t) {
+            if(result.isCollide) {
+                if (-0.1f <= result.t && result.t < nearest_t) {
+                    if (item instanceof Spring) {
+                        if (player.dy > 0) {
                             if (result.ny < 0) {
                                 nearest_t = result.t;
                                 collidee = item;
                             }
                         }
                     }
-                    else {
-                        // 아이템 충돌 처리
+                    else if (item instanceof Jetpack) {
+                        nearest_t = result.t;
+                        collidee = item;
                     }
                 }
             }
@@ -105,10 +107,11 @@ public class InGameScene extends Scene {
                 player.jump(2);
                 ((Spring)collidee).trigger();
             }
-//            else if(collidee instanceof Item) {
-//                ((Item)collidee).onCollision(player);
-//                remove(collidee);
-//            }
+            else if(collidee instanceof Jetpack) {
+                Jetpack jetpack = (Jetpack)collidee;
+                player.boost(Jetpack.BOOST_POWER, Jetpack.BOOST_TIME);
+                remove(jetpack);
+            }
         }
 
         super.update();

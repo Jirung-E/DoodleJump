@@ -10,6 +10,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameLayer;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameScene;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Jetpack;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Spring;
 
 public class TileLoader implements IGameObject, ILayerProvider<InGameLayer> {
@@ -94,13 +95,17 @@ public class TileLoader implements IGameObject, ILayerProvider<InGameLayer> {
         // 5% 확률로 아이템 생성
         if(random.nextInt(20) == 0) {
             // n% 확률로 스프링 생성
-            if(random.nextInt(1) == 0) {
+            if(random.nextInt(2) == 0) {
                 Spring spring = scene.getObject(Spring.class);
                 spring.setParent(tile);
                 spring.update();
                 scene.add(spring);
             }
             else {
+                Jetpack jetpack = scene.getObject(Jetpack.class);
+                jetpack.setParent(tile);
+                jetpack.update();
+                scene.add(jetpack);
                 if(difficulty > 0.2) {
                     // 기타 아이템 생성
                 }

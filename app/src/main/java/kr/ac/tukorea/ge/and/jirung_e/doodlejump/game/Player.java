@@ -20,8 +20,7 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
     private static final String TAG = Player.class.getSimpleName();
     private static final float WIDTH = Metrics.width / 9.0f * 1.8f;
     private static final float WIDTH_HALF = WIDTH / 2;
-    private final float HEIGHT;
-    private final float HEIGHT_HALF;
+    private final float COLLIDER_OFFSET_Y;
     public float x, y;
     public float dx, dy;
     private float target_dx;
@@ -39,6 +38,8 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
     private Action action;
     private static final float crouchTimeMax = 0.5f;
     private float crouchTime;
+    private float boostPower;
+    private float boostTime;
 
 
     ///////////////////////////////////////// Constructors /////////////////////////////////////////
@@ -46,8 +47,8 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
         sprites = new HashMap<>();
 
         Bitmap bitmap = BitmapPool.get(R.mipmap.character_left);
-        HEIGHT = WIDTH * ((float) bitmap.getHeight() / bitmap.getWidth());
-        HEIGHT_HALF = HEIGHT / 2;
+        float HEIGHT = WIDTH * ((float) bitmap.getHeight() / bitmap.getWidth());
+        float HEIGHT_HALF = HEIGHT / 2;
 
         sprite = new Sprite(bitmap);
         sprite.setOffset(0.0f, -HEIGHT_HALF);
@@ -75,7 +76,10 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
         dx = 0;
         dy = JUMP_SPEED;
         target_dx = 0;
-        collider = new BoxCollider(WIDTH_HALF, HEIGHT);
+
+        float COLLIDER_HEIGHT = HEIGHT * 0.8f;
+        COLLIDER_OFFSET_Y = COLLIDER_HEIGHT / 2;
+        collider = new BoxCollider(WIDTH_HALF, COLLIDER_HEIGHT);
 
         updateCollider();
         sprite.setPosition(x, y);
@@ -92,10 +96,17 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
         }
         dx = Math.clamp(dx, -MOVE_SPEED, MOVE_SPEED);
 
-        dy += InGameScene.GRAVITY * GameView.frameTime;
-        // 최고속력 제한
-        if(dy > -JUMP_SPEED) {
-            dy = -JUMP_SPEED;
+        if(boostTime > 0) {
+            // boostPower까지 서서히 속도 증가
+            dy = Math.max(dy + boostPower * GameView.frameTime, boostPower);
+            boostTime -= GameView.frameTime;
+            if(boostTime <= 0) {
+                boostTime = 0;
+                collider.isActive = true;
+            }
+        }
+        else {
+            dy = Math.min(dy + InGameScene.GRAVITY * GameView.frameTime, -JUMP_SPEED);
         }
 
         x += dx * GameView.frameTime;
@@ -103,6 +114,12 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
 
         updateCollider();
         updateSprite();
+    }
+
+    public void boost(float power, float duration) {
+        collider.isActive = false;
+        boostPower = power * JUMP_SPEED;
+        boostTime = duration;
     }
 
     public void jump() {
@@ -155,7 +172,7 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
     }
 
     private void updateCollider() {
-        collider.setPosition(x, y - HEIGHT_HALF);
+        collider.setPosition(x, y - COLLIDER_OFFSET_Y);
     }
 
     private void updateSprite() {

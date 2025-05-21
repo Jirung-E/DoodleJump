@@ -20,7 +20,7 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        GameView.drawsDebugStuffs = BuildConfig.DEBUG;
+        GameView.drawsDebugStuffs = BuildConfig.DEBUG;
         super.onCreate(savedInstanceState);
         gameView = new GameView(this);
         Scene startScene = new InGameScene();
