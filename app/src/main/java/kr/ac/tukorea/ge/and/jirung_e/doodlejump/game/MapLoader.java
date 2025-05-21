@@ -1,20 +1,23 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game;
 
 import android.graphics.Canvas;
-import android.util.Log;
 
 import java.util.Random;
 
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameLayer;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameScene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Jetpack;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Spring;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.monster.Monster;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.monster.Monster1;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.BrokenTile;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.MovingTile;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.NormalTile;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.Tile;
 
-public class TileLoader implements IGameObject, ILayerProvider<InGameLayer> {
-    private static final String TAG = TileLoader.class.getSimpleName();
+public class MapLoader implements IGameObject, ILayerProvider<InGameLayer> {
+    private static final String TAG = MapLoader.class.getSimpleName();
 
     private final InGameScene scene;
     private final Random random = new Random();
@@ -28,7 +31,7 @@ public class TileLoader implements IGameObject, ILayerProvider<InGameLayer> {
     private float brokenTileGenerateCounter = 0;
 
 
-    public TileLoader(InGameScene mainScene) {
+    public MapLoader(InGameScene mainScene) {
         scene = mainScene;
         y = Metrics.height * 0.8f;
         Y_RANGE = (int)(Metrics.height * 0.18f);
@@ -48,26 +51,37 @@ public class TileLoader implements IGameObject, ILayerProvider<InGameLayer> {
                 y -= amount;
                 brokenTileGenerateCounter = 0;
 
-                // 사이에 BrokenTile을 생성
+                // 사이에 BrokenTile 또는 Monster 생성
                 float minY = y + MIN_DISTANCE;
                 float maxY = y + amount - MIN_DISTANCE;
 
-                int remained = (int)between;
-                amount = random.nextInt(remained + 1);
-                remained -= (int)Math.ceil(amount);
-                float brokenTileY = maxY - amount;
-                do {
-                    // 생성
-                    Tile brokenTile = scene.getObject(BrokenTile.class);
-                    brokenTile.x = random.nextInt(Tile.X_RANGE) + Tile.START_X;
-                    brokenTile.y = brokenTileY;
-                    brokenTile.update();
-                    scene.add(brokenTile);
-
-                    amount = random.nextInt(Y_RANGE) * difficulty + MIN_DISTANCE;
-                    brokenTileY -= amount;
+                // BrokenTile 생성
+                if(random.nextInt(2) == 0) {
+                    int remained = (int)between;
+                    amount = random.nextInt(remained + 1);
                     remained -= (int)Math.ceil(amount);
-                } while(remained >= 0);
+                    float brokenTileY = maxY - amount;
+                    do {
+                        // 생성
+                        Tile brokenTile = scene.getObject(BrokenTile.class);
+                        brokenTile.x = random.nextInt(Tile.X_RANGE) + Tile.START_X;
+                        brokenTile.y = brokenTileY;
+                        brokenTile.update();
+                        scene.add(brokenTile);
+
+                        amount = random.nextInt(Y_RANGE) * difficulty + MIN_DISTANCE;
+                        brokenTileY -= amount;
+                        remained -= (int)Math.ceil(amount);
+                    } while(remained >= 0);
+                }
+                // Monster 생성
+                else {
+                    Monster monster = scene.getObject(Monster1.class);
+                    monster.x = random.nextInt(Tile.X_RANGE) + Tile.START_X;
+                    monster.y = (minY + maxY) / 2;
+                    monster.update();
+                    scene.add(monster);
+                }
             }
             else {
                 // 다음에 생성되는 Tile의 위치

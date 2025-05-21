@@ -15,17 +15,17 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.CcdResult;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Item;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Jetpack;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.monster.Monster;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.BrokenTile;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.NormalTile;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Spring;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.Tile;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.TileLoader;
 
 public class InGameScene extends Scene {
     private static final String TAG = InGameScene.class.getSimpleName();
-    private Player player;
+    private final Player player;
     private float score;
-    private TileLoader tileLoader;
+    private final MapLoader mapLoader;
     private final float MIN_HEIGHT;
     public static final float GRAVITY = 9.8f * 256f;
 
@@ -37,8 +37,8 @@ public class InGameScene extends Scene {
 
         initLayers(InGameLayer.COUNT);
 
-        tileLoader = new TileLoader(this);
-        add(tileLoader);
+        mapLoader = new MapLoader(this);
+        add(mapLoader);
 
         player = new Player();
 
@@ -129,9 +129,9 @@ public class InGameScene extends Scene {
 
             player.y = MIN_HEIGHT;
             score += diff / 10f;
-            tileLoader.setDifficulty(score / 5000.0f);
+            mapLoader.setDifficulty(score / 5000.0f);
 
-            tileLoader.y += diff;
+            mapLoader.y += diff;
 
             ArrayList<IGameObject> tiles = objectsAt(InGameLayer.tile);
             for(int i=tiles.size()-1; i>=0; --i) {
@@ -149,6 +149,18 @@ public class InGameScene extends Scene {
                         remove(tile.item);
                     }
                     remove(tile);
+                }
+            }
+            ArrayList<IGameObject> monsters = objectsAt(InGameLayer.enemy);
+            for(int i=monsters.size()-1; i>=0; --i) {
+                Monster monster = (Monster)(monsters.get(i));
+                monster.y += diff;
+                float monster_y = monster.collider.getTop();
+                if(monster_y > Metrics.height) {
+                    monster.collider.isActive = false;
+                }
+                if(monster_y > Metrics.height) {
+                    remove(monster);
                 }
             }
         }
@@ -169,7 +181,7 @@ public class InGameScene extends Scene {
 
         if(GameView.drawsDebugStuffs) {
             canvas.drawText("SCORE: " + score, 0f, 40f, scorePaint);
-            canvas.drawText("difficulty: " + tileLoader.getDifficulty(), 0f, 80f, scorePaint);
+            canvas.drawText("difficulty: " + mapLoader.getDifficulty(), 0f, 80f, scorePaint);
         }
     }
 
