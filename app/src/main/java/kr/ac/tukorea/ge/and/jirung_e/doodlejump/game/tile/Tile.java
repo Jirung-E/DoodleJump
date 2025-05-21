@@ -59,7 +59,7 @@ public abstract class Tile implements IGameObject, ILayerProvider<InGameLayer>, 
         sprite.setOffset(0.0f, offsetY);
         updateSprite();
 
-        collider.setSize(DEFAULT_WIDTH, IMG_HEIGHT);
+        collider.setSize(DEFAULT_WIDTH, IMG_HEIGHT * 0.8f);
         updateCollider();
     }
 
