@@ -102,12 +102,12 @@ public class TileLoader implements IGameObject, ILayerProvider<InGameLayer> {
                 scene.add(spring);
             }
             else {
-                Jetpack jetpack = scene.getObject(Jetpack.class);
-                jetpack.setParent(tile);
-                jetpack.update();
-                scene.add(jetpack);
                 if(difficulty > 0.2) {
                     // 기타 아이템 생성
+                    Jetpack jetpack = scene.getObject(Jetpack.class);
+                    jetpack.setParent(tile);
+                    jetpack.update();
+                    scene.add(jetpack);
                 }
             }
         }
