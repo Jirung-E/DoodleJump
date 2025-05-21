@@ -48,7 +48,7 @@ public abstract class Item implements IGameObject, ILayerProvider<InGameLayer>, 
 
         Rect srcRect = getSrcRect();
         float IMG_HEIGHT = WIDTH * ((float) srcRect.height() / srcRect.width());
-        offsetY = -IMG_HEIGHT / 2;
+        offsetY = -IMG_HEIGHT / 3;
 
         sprite.setSrcRect(srcRect.left, srcRect.top, srcRect.right, srcRect.bottom);
         sprite.setSize(WIDTH, IMG_HEIGHT);
