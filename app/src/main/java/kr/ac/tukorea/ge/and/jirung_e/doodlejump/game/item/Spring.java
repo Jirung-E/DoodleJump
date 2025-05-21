@@ -12,7 +12,6 @@ public class Spring extends Item {
         new Rect(807, 198, 843, 221),
         new Rect(807, 230, 843, 285),
     };
-    private Tile parent;
 
 
     public Spring() {
@@ -23,15 +22,6 @@ public class Spring extends Item {
         init(parent);
     }
 
-
-    @Override
-    public void update() {
-        if (parent != null) {
-            this.x = parent.x;
-            this.y = parent.y;
-        }
-        super.update();
-    }
 
     public void trigger() {
         if(collider != null) {
