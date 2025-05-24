@@ -12,16 +12,7 @@ public class Spring extends Item {
         new Rect(807, 198, 843, 221),
         new Rect(807, 230, 843, 285),
     };
-
-
-    public Spring() {
-        init(null);
-    }
-
-    public Spring(@NonNull Tile parent) {
-        init(parent);
-    }
-
+    
 
     public void trigger() {
         if(collider != null) {

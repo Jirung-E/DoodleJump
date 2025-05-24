@@ -25,21 +25,16 @@ public abstract class Item implements IGameObject, ILayerProvider<InGameLayer>, 
 
 
     public Item() {
-        init(null);
+        init();
     }
 
-    public Item(@NonNull Tile parent) {
-        init(parent);
-    }
-
-    protected void init(Tile parent) {
-        this.parent = parent;
-
+    protected void init() {
         sprite = new Sprite(R.mipmap.tiles);
         collider = new BoxCollider(0, 0);
 
         setSrcRect();
     }
+
 
     protected abstract Rect getSrcRect();
     protected void setSrcRect() {

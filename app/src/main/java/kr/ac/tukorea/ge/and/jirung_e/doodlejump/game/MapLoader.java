@@ -8,6 +8,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Jetpack;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Propeller;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Spring;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.monster.Monster;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.monster.Monster1;
@@ -118,10 +119,18 @@ public class MapLoader implements IGameObject, ILayerProvider<InGameLayer> {
             else {
                 if(difficulty > 0.2) {
                     // 기타 아이템 생성
-                    Jetpack jetpack = scene.getObject(Jetpack.class);
-                    jetpack.setParent(tile);
-                    jetpack.update();
-                    scene.add(jetpack);
+                    if(random.nextInt(2) == 0) {
+                        Jetpack jetpack = scene.getObject(Jetpack.class);
+                        jetpack.setParent(tile);
+                        jetpack.update();
+                        scene.add(jetpack);
+                    }
+                    else {
+                        Propeller propeller = scene.getObject(Propeller.class);
+                        propeller.setParent(tile);
+                        propeller.update();
+                        scene.add(propeller);
+                    }
                 }
             }
         }

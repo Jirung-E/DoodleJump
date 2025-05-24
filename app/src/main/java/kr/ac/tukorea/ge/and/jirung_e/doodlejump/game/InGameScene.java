@@ -13,6 +13,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene.Scene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.CcdResult;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Booster;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Item;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Jetpack;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.monster.Monster;
@@ -84,7 +85,7 @@ public class InGameScene extends Scene {
                             }
                         }
                     }
-                    else if (item instanceof Jetpack) {
+                    else if (item instanceof Booster) {
                         nearest_t = result.t;
                         collidee = item;
                     }
@@ -107,10 +108,10 @@ public class InGameScene extends Scene {
                 player.jump(2);
                 ((Spring)collidee).trigger();
             }
-            else if(collidee instanceof Jetpack) {
-                Jetpack jetpack = (Jetpack)collidee;
-                player.boost(Jetpack.BOOST_POWER, Jetpack.BOOST_TIME);
-                remove(jetpack);
+            else if(collidee instanceof Booster) {
+                Booster booster = (Booster)collidee;
+                player.boost(booster.getBoostPower(), booster.getBoostTime());
+                remove(booster);
             }
         }
 
