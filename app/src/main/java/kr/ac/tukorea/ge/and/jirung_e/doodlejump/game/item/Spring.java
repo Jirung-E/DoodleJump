@@ -12,7 +12,7 @@ public class Spring extends Item {
         new Rect(807, 198, 843, 221),
         new Rect(807, 230, 843, 285),
     };
-    
+
 
     public void trigger() {
         if(collider != null) {
@@ -38,12 +38,5 @@ public class Spring extends Item {
     @Override
     protected float getSize() {
         return 0.3f;
-    }
-
-    @Override
-    public void onRecycle() {
-        super.onRecycle();
-        collider.isActive = true;
-        setSrcRect();
     }
 }

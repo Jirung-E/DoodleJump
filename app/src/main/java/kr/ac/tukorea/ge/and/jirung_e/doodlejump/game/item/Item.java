@@ -113,5 +113,7 @@ public abstract class Item implements IGameObject, ILayerProvider<InGameLayer>, 
     @Override
     public void onRecycle() {
         parent = null;
+        collider.isActive = true;
+        setSrcRect();
     }
 }
