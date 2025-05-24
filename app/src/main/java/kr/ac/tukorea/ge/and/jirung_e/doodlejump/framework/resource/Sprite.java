@@ -61,6 +61,15 @@ public class Sprite {
         }
     }
 
+    public void setSrcRect(Rect srcRect) {
+        if(this.srcRect == null) {
+            this.srcRect = new Rect(srcRect);
+        }
+        else {
+            this.srcRect.set(srcRect);
+        }
+    }
+
     public void setOffset(float off_x, float off_y) {
         offset_x = off_x;
         offset_y = off_y;

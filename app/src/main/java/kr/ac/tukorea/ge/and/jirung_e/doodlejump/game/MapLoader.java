@@ -108,7 +108,7 @@ public class MapLoader implements IGameObject, ILayerProvider<InGameLayer> {
         scene.add(tile);
 
         // 5% 확률로 아이템 생성
-        if(random.nextInt(20) == 0) {
+        if(random.nextInt(2) == 0) {
             // n% 확률로 스프링 생성
             if(random.nextInt(2) == 0) {
                 Spring spring = scene.getObject(Spring.class);
@@ -117,7 +117,7 @@ public class MapLoader implements IGameObject, ILayerProvider<InGameLayer> {
                 scene.add(spring);
             }
             else {
-                if(difficulty > 0.2) {
+//                if(difficulty > 0.2) {
                     // 기타 아이템 생성
                     if(random.nextInt(2) == 0) {
                         Jetpack jetpack = scene.getObject(Jetpack.class);
@@ -131,7 +131,7 @@ public class MapLoader implements IGameObject, ILayerProvider<InGameLayer> {
                         propeller.update();
                         scene.add(propeller);
                     }
-                }
+//                }
             }
         }
     }

@@ -1,8 +1,7 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.player;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.util.Log;
 
 import java.util.HashMap;
 
@@ -14,6 +13,11 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.BoxCollider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameLayer;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameScene;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Booster;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.player.equipment.Equipment;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.player.equipment.Jetpack;
 
 
 public class Player implements IGameObject, ILayerProvider<InGameLayer> {
@@ -30,11 +34,9 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
     private static final float MOVE_SPEED = Metrics.width;
     private static final float ACCELERATION_X = 4 * MOVE_SPEED;
     private Sprite sprite;
-    private HashMap<Action, Sprite> sprites;
+    private final HashMap<Action, Sprite> sprites;
+    private Equipment equipment;
 
-    enum Action {
-        LEFT, RIGHT, LEFT_CROUCH, RIGHT_CROUCH,
-    }
     private Action action;
     private static final float crouchTimeMax = 0.5f;
     private float crouchTime;
@@ -103,6 +105,7 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
             if(boostTime <= 0) {
                 boostTime = 0;
                 collider.isActive = true;
+                equipment = null;
             }
         }
         else {
@@ -114,12 +117,17 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
 
         updateCollider();
         updateSprite();
+
+        if(equipment != null) {
+            equipment.update(x, y, action, GameView.frameTime);
+        }
     }
 
-    public void boost(float power, float duration) {
+    public void boost(Booster booster) {
         collider.isActive = false;
-        boostPower = power * JUMP_SPEED;
-        boostTime = duration;
+        boostPower = booster.getBoostPower() * JUMP_SPEED;
+        boostTime = booster.getBoostTime();
+        equipment = new Jetpack();
     }
 
     public void jump() {
@@ -168,6 +176,9 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
         sprite.draw(canvas);
         if(GameView.drawsDebugStuffs) {
             collider.draw(canvas);
+        }
+        if(equipment != null) {
+            equipment.draw(canvas);
         }
     }
 
