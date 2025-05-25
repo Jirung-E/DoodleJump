@@ -14,6 +14,12 @@ public class Spring extends Item {
     };
 
 
+    @Override
+    public ItemId getId() {
+        return ItemId.SPRING;
+    }
+
+
     public void trigger() {
         if(collider != null) {
             collider.isActive = false;

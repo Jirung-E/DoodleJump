@@ -1,4 +1,4 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.player.equipment;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.player.booster;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -8,28 +8,42 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sprite;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.player.Action;
 
-public class Propeller extends Equipment {
+public class Jetpack implements IBooster {
     private final Sprite sprite;
     private static final Rect[] srcRect = {
-        new Rect(0, 0, 64, 64),
-        new Rect(64, 0, 128, 64),
-        new Rect(0, 64, 64, 128),
-        new Rect(64, 64, 128, 128)
+        new Rect(0, 0, 64, 128),
+        new Rect(64, 0, 128, 128),
+        new Rect(128, 0, 192, 128),
+        new Rect(192, 0, 256, 128),
+        new Rect(0, 128, 64, 256),
+        new Rect(64, 128, 128, 256),
+        new Rect(128, 128, 192, 256),
+        new Rect(192, 128, 256, 256),
+        new Rect(0, 256, 64, 384),
+        new Rect(64, 256, 128, 384),
     };
-    private static final int[] animationFrames = {
-        1, 2, 1, 3,
+    enum Phase {
+        BOOST_START,
+        BOOSTING,
+        BOOST_END,
+    }
+    private static final int[][] animationFrames = {
+        {9, 0, 1, 2},       // BOOST_START
+        {3, 4, 5},          // BOOSTING
+        {6, 7, 8, 9}        // BOOST_END
     };
     private static final float animationSpeed = 20f; // frames per second
     private float animationTime = 0.0f;
+
     private float x, y;
     private Action action = Action.LEFT; // 기본값은 왼쪽
 
 
-    public Propeller() {
-        sprite = new Sprite(R.mipmap.propeller);
+    public Jetpack() {
+        sprite = new Sprite(R.mipmap.jetpack);
+        sprite.setOffset(60f, -20.0f);
         float width = Metrics.width / 9.0f;
         float height = width * ((float) srcRect[0].height() / srcRect[0].width());
-        sprite.setOffset(0, -height * 1.5f);
         sprite.setSize(width, height); // 크기 조정
     }
 
@@ -44,9 +58,9 @@ public class Propeller extends Equipment {
 
         animationTime += deltaTime;
 
-        int frameCount = animationFrames.length;
+        int frameCount = animationFrames[Phase.BOOSTING.ordinal()].length;
         int frameIndex = Math.round(animationTime * animationSpeed) % frameCount;
-        int srcIndex = animationFrames[frameIndex];
+        int srcIndex = animationFrames[Phase.BOOSTING.ordinal()][frameIndex];
         sprite.setSrcRect(srcRect[srcIndex]);
     }
 
@@ -64,5 +78,16 @@ public class Propeller extends Equipment {
             sprite.draw(canvas);
             canvas.restore();
         }
+    }
+
+
+    @Override
+    public float getBoostPower() {
+        return 2.5f;
+    }
+
+    @Override
+    public float getBoostTime() {
+        return 4f;
     }
 }

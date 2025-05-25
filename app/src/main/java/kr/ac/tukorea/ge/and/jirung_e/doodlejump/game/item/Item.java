@@ -3,8 +3,6 @@ package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-import androidx.annotation.NonNull;
-
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider;
@@ -34,6 +32,9 @@ public abstract class Item implements IGameObject, ILayerProvider<InGameLayer>, 
 
         setSrcRect();
     }
+
+
+    public abstract ItemId getId();
 
 
     protected abstract Rect getSrcRect();

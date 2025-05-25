@@ -13,7 +13,6 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene.Scene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.CcdResult;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Booster;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Item;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.monster.Monster;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.player.Player;
@@ -57,16 +56,34 @@ public class InGameScene extends Scene {
 
         float nearest_t = Float.POSITIVE_INFINITY;
         IGameObject collidee = null;
+        CcdResult nearest_result = null;
         for(IGameObject obj : objectsAt(InGameLayer.tile)) {
             Tile tile = (Tile)obj;
             // 아래로 내려가는 중에 충돌하는 경우
             if(player.dy > 0) {
                 CcdResult result = player.collider.ccd(tile.collider, player.dx * GameView.frameTime, player.dy * GameView.frameTime);
                 if(result.isCollide) {
-                    if (-0.1f <= result.t && result.t < nearest_t) {
-                        if (result.ny < 0) {
+                    if(-0.1f <= result.t && result.t < nearest_t) {
+                        if(result.ny < 0) {
                             nearest_t = result.t;
                             collidee = tile;
+                            nearest_result = result;
+                        }
+                    }
+                }
+            }
+        }
+        for(IGameObject obj : objectsAt(InGameLayer.enemy)) {
+            Monster monster = (Monster)obj;
+            // 아래로 내려가는 중에 충돌하는 경우
+            if(player.dy > 0) {
+                CcdResult result = player.collider.ccd(monster.collider, player.dx * GameView.frameTime, player.dy * GameView.frameTime);
+                if(result.isCollide) {
+                    if(-0.1f <= result.t && result.t < nearest_t) {
+                        if(result.ny < 0) {
+                            nearest_t = result.t;
+                            collidee = monster;
+                            nearest_result = result;
                         }
                     }
                 }
@@ -76,23 +93,25 @@ public class InGameScene extends Scene {
             Item item = (Item)obj;
             CcdResult result = player.collider.ccd(item.collider, player.dx * GameView.frameTime, player.dy * GameView.frameTime);
             if(result.isCollide) {
-                if (-0.1f <= result.t && result.t < nearest_t) {
-                    if (item instanceof Spring) {
-                        if (player.dy > 0) {
-                            if (result.ny < 0) {
+                if(-0.1f <= result.t && result.t < nearest_t) {
+                    if(item instanceof Spring) {
+                        if(player.dy > 0) {
+                            if(result.ny < 0) {
                                 nearest_t = result.t;
                                 collidee = item;
+                                nearest_result = result;
                             }
                         }
                     }
-                    else if (item instanceof Booster) {
+                    else {
                         nearest_t = result.t;
                         collidee = item;
+                        nearest_result = result;
                     }
                 }
             }
         }
-        if(nearest_t < Float.POSITIVE_INFINITY) {
+        if(nearest_result != null) {
             if(collidee instanceof Tile) {
                 // 여러개 겹쳐있는 경우 하나만 처리하게 되지만, 겹쳐있게 만들지 않을거임
                 if(collidee instanceof BrokenTile) {
@@ -103,15 +122,29 @@ public class InGameScene extends Scene {
                     player.jump();
                 }
             }
-            else if(collidee instanceof Spring) {
-                player.y = player.y + player.dy * GameView.frameTime * nearest_t;
-                player.jump(2);
-                ((Spring)collidee).trigger();
+            else if(collidee instanceof Monster) {
+                if(nearest_result.ny < 0 && player.dy > 0) {
+                    // 몬스터를 밟은 경우
+                    player.y = player.y + player.dy * GameView.frameTime * nearest_t;
+                    player.jump();
+//                    ((Monster)collidee).die();
+                }
+                else {
+                    // 몬스터와 충돌한 경우
+//                    player.die();
+                }
             }
-            else if(collidee instanceof Booster) {
-                Booster booster = (Booster)collidee;
-                player.boost(booster);
-                remove(booster);
+            else if(collidee instanceof Item) {
+                if(collidee instanceof Spring) {
+                    player.y = player.y + player.dy * GameView.frameTime * nearest_t;
+                    player.jump(2);
+                    ((Spring)collidee).trigger();
+                }
+                else {
+                    Item item = (Item)collidee;
+                    player.equip(item.getId());
+                    remove(item);
+                }
             }
         }
 
