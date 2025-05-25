@@ -18,6 +18,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameScene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Booster;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.player.equipment.Equipment;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.player.equipment.Jetpack;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.player.equipment.Propeller;
 
 
 public class Player implements IGameObject, ILayerProvider<InGameLayer> {
@@ -127,7 +128,7 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
         collider.isActive = false;
         boostPower = booster.getBoostPower() * JUMP_SPEED;
         boostTime = booster.getBoostTime();
-        equipment = new Jetpack();
+        equipment = new Propeller();
     }
 
     public void jump() {
