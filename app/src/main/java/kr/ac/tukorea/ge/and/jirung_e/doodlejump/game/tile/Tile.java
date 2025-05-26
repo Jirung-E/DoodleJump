@@ -11,7 +11,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.BoxCollider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameLayer;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.InGameLayer;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Item;
 
 

@@ -1,4 +1,4 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -13,6 +13,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene.Scene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.CcdResult;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.objects.MapLoader;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Item;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.monster.Monster;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.player.Player;
@@ -32,7 +33,6 @@ public class InGameScene extends Scene {
 
     ///////////////////////////////////////// Constructors /////////////////////////////////////////
     public InGameScene() {
-        Metrics.setGameSize(900, 1600);
         MIN_HEIGHT = Metrics.height / 2.0f;
 
         initLayers(InGameLayer.COUNT);

@@ -1,4 +1,4 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene;
 
 public enum InGameLayer {
     bg, item, tile, enemy, bullet, player, ui, controller;

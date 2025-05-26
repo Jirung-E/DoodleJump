@@ -1,10 +1,9 @@
 package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile;
 
-import android.animation.ValueAnimator;
 import android.graphics.Rect;
 
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameScene;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.InGameScene;
 
 
 public class BrokenTile extends Tile {

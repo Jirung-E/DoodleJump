@@ -1,4 +1,4 @@
-package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game;
+package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.objects;
 
 import android.graphics.Canvas;
 
@@ -12,6 +12,8 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Propeller;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Spring;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.monster.Monster;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.monster.Monster1;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.InGameLayer;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.InGameScene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.BrokenTile;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.MovingTile;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.NormalTile;

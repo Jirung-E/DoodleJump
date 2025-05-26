@@ -10,7 +10,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IRecyclable;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.BoxCollider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sprite;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.InGameLayer;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.InGameLayer;
 
 public abstract class Monster implements IGameObject, ILayerProvider<InGameLayer>, IRecyclable {
     private static final String TAG = Monster.class.getSimpleName();
