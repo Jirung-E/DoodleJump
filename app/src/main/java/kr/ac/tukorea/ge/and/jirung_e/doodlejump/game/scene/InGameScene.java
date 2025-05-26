@@ -35,7 +35,7 @@ public class InGameScene extends Scene {
     public InGameScene() {
         MIN_HEIGHT = Metrics.height / 2.0f;
 
-        initLayers(InGameLayer.COUNT);
+        initLayers(Layer.COUNT);
 
         mapLoader = new MapLoader(this);
         add(mapLoader);
@@ -57,7 +57,7 @@ public class InGameScene extends Scene {
         float nearest_t = Float.POSITIVE_INFINITY;
         IGameObject collidee = null;
         CcdResult nearest_result = null;
-        for(IGameObject obj : objectsAt(InGameLayer.tile)) {
+        for(IGameObject obj : objectsAt(Layer.tile)) {
             Tile tile = (Tile)obj;
             // 아래로 내려가는 중에 충돌하는 경우
             if(player.dy > 0) {
@@ -73,7 +73,7 @@ public class InGameScene extends Scene {
                 }
             }
         }
-        for(IGameObject obj : objectsAt(InGameLayer.enemy)) {
+        for(IGameObject obj : objectsAt(Layer.enemy)) {
             Monster monster = (Monster)obj;
             // 아래로 내려가는 중에 충돌하는 경우
             if(player.dy > 0) {
@@ -89,7 +89,7 @@ public class InGameScene extends Scene {
                 }
             }
         }
-        for(IGameObject obj : objectsAt(InGameLayer.item)) {
+        for(IGameObject obj : objectsAt(Layer.item)) {
             Item item = (Item)obj;
             CcdResult result = player.collider.ccd(item.collider, player.dx * GameView.frameTime, player.dy * GameView.frameTime);
             if(result.isCollide) {
@@ -167,7 +167,7 @@ public class InGameScene extends Scene {
 
             mapLoader.y += diff;
 
-            ArrayList<IGameObject> tiles = objectsAt(InGameLayer.tile);
+            ArrayList<IGameObject> tiles = objectsAt(Layer.tile);
             for(int i=tiles.size()-1; i>=0; --i) {
                 Tile tile = (Tile)(tiles.get(i));
                 tile.y += diff;
@@ -185,7 +185,7 @@ public class InGameScene extends Scene {
                     remove(tile);
                 }
             }
-            ArrayList<IGameObject> monsters = objectsAt(InGameLayer.enemy);
+            ArrayList<IGameObject> monsters = objectsAt(Layer.enemy);
             for(int i=monsters.size()-1; i>=0; --i) {
                 Monster monster = (Monster)(monsters.get(i));
                 monster.y += diff;

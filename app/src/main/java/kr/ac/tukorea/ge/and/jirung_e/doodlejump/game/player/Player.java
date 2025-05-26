@@ -15,7 +15,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.BoxCollider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.InGameLayer;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.Layer;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.InGameScene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.ItemId;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.player.booster.IBooster;
@@ -23,7 +23,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.player.booster.Jetpack;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.player.booster.Propeller;
 
 
-public class Player implements IGameObject, ILayerProvider<InGameLayer> {
+public class Player implements IGameObject, ILayerProvider<Layer> {
     private static final String TAG = Player.class.getSimpleName();
     private static final float WIDTH = Metrics.width / 9.0f * 1.8f;
     private static final float WIDTH_HALF = WIDTH / 2;
@@ -220,7 +220,7 @@ public class Player implements IGameObject, ILayerProvider<InGameLayer> {
 
 
     @Override
-    public InGameLayer getLayer() {
-        return InGameLayer.player;
+    public Layer getLayer() {
+        return Layer.player;
     }
 }

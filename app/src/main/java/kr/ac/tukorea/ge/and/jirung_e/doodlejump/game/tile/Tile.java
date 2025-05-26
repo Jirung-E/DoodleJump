@@ -11,11 +11,11 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.BoxCollider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.InGameLayer;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.Layer;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Item;
 
 
-public abstract class Tile implements IGameObject, ILayerProvider<InGameLayer>, IRecyclable {
+public abstract class Tile implements IGameObject, ILayerProvider<Layer>, IRecyclable {
     private static final String TAG = Tile.class.getSimpleName();
     public static final float DEFAULT_WIDTH = Metrics.width / 5.4f;
     public static final int PADDING_X = (int)(Metrics.width * 0.01f);   // 1%
@@ -87,8 +87,8 @@ public abstract class Tile implements IGameObject, ILayerProvider<InGameLayer>, 
     }
 
     @Override
-    public InGameLayer getLayer() {
-        return InGameLayer.tile;
+    public Layer getLayer() {
+        return Layer.tile;
     }
 
     @Override

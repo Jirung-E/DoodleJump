@@ -12,14 +12,14 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Propeller;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Spring;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.monster.Monster;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.monster.Monster1;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.InGameLayer;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.Layer;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.InGameScene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.BrokenTile;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.MovingTile;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.NormalTile;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.Tile;
 
-public class MapLoader implements IGameObject, ILayerProvider<InGameLayer> {
+public class MapLoader implements IGameObject, ILayerProvider<Layer> {
     private static final String TAG = MapLoader.class.getSimpleName();
 
     private final InGameScene scene;
@@ -152,7 +152,7 @@ public class MapLoader implements IGameObject, ILayerProvider<InGameLayer> {
     }
 
     @Override
-    public InGameLayer getLayer() {
-        return InGameLayer.controller;
+    public Layer getLayer() {
+        return Layer.controller;
     }
 }
