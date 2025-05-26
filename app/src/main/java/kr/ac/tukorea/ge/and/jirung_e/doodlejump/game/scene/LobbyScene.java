@@ -48,7 +48,7 @@ public class LobbyScene extends Scene {
 
         Sprite playButtonSprite = new Sprite(R.mipmap.play_button);
         Sprite playButtonPressedSprite = new Sprite(R.mipmap.play_button_pressed);
-        float playButtonWidth = width * 0.3f;
+        float playButtonWidth = width * 0.36f;
         float playButtonHeight = playButtonWidth * (float)playButtonSprite.getBitmap().getHeight() / playButtonSprite.getBitmap().getWidth();
         playButtonSprite.setSize(playButtonWidth, playButtonHeight);
         playButtonPressedSprite.setSize(playButtonWidth, playButtonHeight);
@@ -65,6 +65,7 @@ public class LobbyScene extends Scene {
                     }
                 }
         );
+        playButton.setPosition(width * 0.36f, Metrics.height * 0.2f + title_height * 2f);
         controllers.add(playButton);
 
         initLayers(Layer.COUNT);

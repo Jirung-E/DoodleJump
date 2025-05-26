@@ -29,7 +29,7 @@ public class Button implements ITouchable {
     }
 
 
-    public void moveTo(float x, float y) {
+    public void setPosition(float x, float y) {
         defaultSprite.setPosition(x, y);
         pressedSprite.setPosition(x, y);
     }
