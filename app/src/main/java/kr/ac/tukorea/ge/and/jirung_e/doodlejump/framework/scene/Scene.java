@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IRecyclable;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ITouchable;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ObjectRecycler;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 
@@ -16,6 +17,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 public class Scene {
     private static final String TAG = Scene.class.getSimpleName();
     protected ArrayList<ArrayList<IGameObject>> layers = new ArrayList<>();
+    protected ArrayList<ITouchable> controllers = new ArrayList<>();
     private final ObjectRecycler recycler = new ObjectRecycler();
 
 
@@ -111,7 +113,26 @@ public class Scene {
         }
     }
 
+    protected ITouchable capturingTouchable;
     public boolean onTouchEvent(MotionEvent event) {
+        if (capturingTouchable != null) {
+            boolean processed = capturingTouchable.onTouchEvent(event);
+            if (!processed || event.getAction() == MotionEvent.ACTION_UP) {
+                Log.d(TAG, "Capture End: " + capturingTouchable);
+                capturingTouchable = null;
+            }
+            return processed;
+        }
+
+        for (ITouchable controller : controllers) {
+            boolean processed = controller.onTouchEvent(event);
+            if (processed) {
+                capturingTouchable = controller;
+                Log.d(TAG, "Capture Start: " + capturingTouchable);
+                return true;
+            }
+        }
+
         return false;
     }
 

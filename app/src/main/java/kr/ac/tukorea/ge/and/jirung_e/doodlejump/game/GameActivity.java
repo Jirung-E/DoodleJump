@@ -11,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.BuildConfig;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene.Scene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.InGameScene;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.LobbyScene;
 
 
 public class GameActivity extends AppCompatActivity {
@@ -26,8 +26,8 @@ public class GameActivity extends AppCompatActivity {
         GameView.drawsDebugStuffs = BuildConfig.DEBUG;
         super.onCreate(savedInstanceState);
         gameView = new GameView(this);
-        Scene startScene = new InGameScene();
-        gameView.pushScene(startScene);
+        gameView.pushScene(new LobbyScene());
+//        gameView.pushScene(new InGameScene());
         setContentView(gameView);
 
         setFullScreen();

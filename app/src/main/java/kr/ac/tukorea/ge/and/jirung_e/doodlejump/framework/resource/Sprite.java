@@ -44,6 +44,10 @@ public class Sprite {
         return height;
     }
 
+    public final RectF getDstRect() {
+        return dstRect;
+    }
+
     /////////////////////////////////////////// Setters  ///////////////////////////////////////////
     public void setImageResourceId(int mipmapId) {
         bitmap = BitmapPool.get(mipmapId);
