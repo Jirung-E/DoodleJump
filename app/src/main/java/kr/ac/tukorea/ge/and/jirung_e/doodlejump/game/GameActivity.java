@@ -2,6 +2,7 @@ package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
@@ -29,6 +30,14 @@ public class GameActivity extends AppCompatActivity {
         gameView.pushScene(new LobbyScene());
 //        gameView.pushScene(new InGameScene());
         setContentView(gameView);
+
+        gameView.setEmptyStackListener(new GameView.OnEmptyStackListener() {
+            @Override
+            public void onEmptyStack() {
+                finish();
+            }
+        });
+        getOnBackPressedDispatcher().addCallback(onBackPressedCallback);
 
         setFullScreen();
     }
