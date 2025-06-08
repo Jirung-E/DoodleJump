@@ -34,7 +34,7 @@ public class GameActivity extends AppCompatActivity {
         gameView.setEmptyStackListener(new GameView.OnEmptyStackListener() {
             @Override
             public void onEmptyStack() {
-                finish();
+                finishAffinity();
             }
         });
         getOnBackPressedDispatcher().addCallback(onBackPressedCallback);
