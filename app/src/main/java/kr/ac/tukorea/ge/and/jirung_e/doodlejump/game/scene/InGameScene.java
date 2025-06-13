@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.Button;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.objects.Score;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.VertScrollBackground;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sprite;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
@@ -31,7 +32,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.Tile;
 public class InGameScene extends Scene {
     private static final String TAG = InGameScene.class.getSimpleName();
     private final Player player;
-    private float score;
+    private final Score score;
     private final MapLoader mapLoader;
     private final float MIN_HEIGHT;
     public static final float GRAVITY = 9.8f * 256f;
@@ -77,6 +78,10 @@ public class InGameScene extends Scene {
             }
         };
         add(Layer.ui, scoreBar);
+
+        score = new Score(scoreBarHeight / 8, scoreBarHeight / 2, scoreBarHeight / 3);
+        score.setScore(0);
+        add(Layer.ui, score);
 
         Rect pauseButtonSrcRect = new Rect(911, 0, 971, 40);
         float buttonHeight = 40f / scoreBarSrcRect.height() * scoreBarHeight;
@@ -233,8 +238,8 @@ public class InGameScene extends Scene {
             float diff = MIN_HEIGHT - player.y;
 
             player.y = MIN_HEIGHT;
-            score += diff / 10f;
-            mapLoader.setDifficulty(score / 5000.0f);
+            score.add(diff / 10);
+            mapLoader.setDifficulty(score.getScore() / 5000.0f);
 
             mapLoader.y += diff;
             background.moveY(diff/4);
@@ -286,7 +291,7 @@ public class InGameScene extends Scene {
         }
 
         if(GameView.drawsDebugStuffs) {
-            canvas.drawText("SCORE: " + score, 0f, 40f, scorePaint);
+            canvas.drawText("SCORE: " + score.getScore(), 0f, 40f, scorePaint);
             canvas.drawText("difficulty: " + mapLoader.getDifficulty(), 0f, 80f, scorePaint);
         }
     }
