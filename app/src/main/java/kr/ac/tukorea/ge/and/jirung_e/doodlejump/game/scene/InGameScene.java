@@ -3,14 +3,18 @@ package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.Button;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.VertScrollBackground;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sprite;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene.Scene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.CcdResult;
@@ -32,6 +36,8 @@ public class InGameScene extends Scene {
     private final float MIN_HEIGHT;
     public static final float GRAVITY = 9.8f * 256f;
     private static final VertScrollBackground background = new VertScrollBackground(R.mipmap.background);
+    private static final RectF touchArea = new RectF(0, Metrics.height / 2, Metrics.width, Metrics.height);
+    private final Button pauseButton;
 
 
     ///////////////////////////////////////// Constructors /////////////////////////////////////////
@@ -52,6 +58,65 @@ public class InGameScene extends Scene {
 
         background.addDistanceY(-8);
         add(Layer.bg, background);
+
+        Sprite scoreBarSprite = new Sprite(R.mipmap.top_score);
+        Rect scoreBarSrcRect = new Rect(0, 0, 640, 92);
+        float scoreBarHeight = Metrics.width * (float)scoreBarSrcRect.height() / scoreBarSrcRect.width();
+        scoreBarSprite.setSrcRect(scoreBarSrcRect);
+        scoreBarSprite.setSize(Metrics.width, scoreBarHeight);
+        scoreBarSprite.setPosition(Metrics.width / 2, scoreBarHeight / 2);
+        IGameObject scoreBar = new IGameObject() {
+            @Override
+            public void update() {
+
+            }
+
+            @Override
+            public void draw(Canvas canvas) {
+                scoreBarSprite.draw(canvas);
+            }
+        };
+        add(Layer.ui, scoreBar);
+
+        Rect pauseButtonSrcRect = new Rect(911, 0, 971, 40);
+        float buttonHeight = 40f / scoreBarSrcRect.height() * scoreBarHeight;
+        float buttonWidth = buttonHeight * (pauseButtonSrcRect.width() / 2f / pauseButtonSrcRect.height());
+        Sprite pauseButtonSprite = new Sprite(R.mipmap.top_score);
+        Sprite pauseButtonPressedSprite = new Sprite(R.mipmap.top_score);
+        pauseButtonSprite.setSrcRect(911, 0, pauseButtonSrcRect.centerX(), 40);
+        pauseButtonPressedSprite.setSrcRect(pauseButtonSrcRect.centerX(), 0, 971, 40);
+        pauseButtonSprite.setSize(buttonWidth, buttonHeight);
+        pauseButtonPressedSprite.setSize(buttonWidth, buttonHeight);
+
+        pauseButton = new Button(
+                pauseButtonSprite,
+                pauseButtonPressedSprite,
+                new Button.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(boolean pressed) {
+                        if(!pressed) {
+                            pause();
+                        }
+                        return true;
+                    }
+                }
+        );
+        pauseButton.setPosition(Metrics.width - buttonWidth * 1.7f, buttonHeight * 0.8f);
+
+        controllers.add(pauseButton);
+
+        IGameObject pauseButtonObj = new IGameObject() {
+            @Override
+            public void update() {
+
+            }
+
+            @Override
+            public void draw(Canvas canvas) {
+                pauseButton.draw(canvas);
+            }
+        };
+        add(Layer.ui, pauseButtonObj);
     }
 
 
@@ -229,28 +294,36 @@ public class InGameScene extends Scene {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_MOVE:
-                float[] pts = Metrics.fromScreen(event.getX(), event.getY());
-                if(pts[0] >= Metrics.width / 2) {
-                    player.setTargetMoveDirection(1);
-                }
-                else {
-                    player.setTargetMoveDirection(-1);
-                }
-                return true;
-            case MotionEvent.ACTION_UP:
-                player.setTargetMoveDirection(0);
-                return true;
+        float[] pts = Metrics.fromScreen(event.getX(), event.getY());
+        if(touchArea.contains(pts[0], pts[1])) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                case MotionEvent.ACTION_MOVE:
+                    if(pts[0] >= Metrics.width / 2) {
+                        player.setTargetMoveDirection(1);
+                    }
+                    else {
+                        player.setTargetMoveDirection(-1);
+                    }
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    player.setTargetMoveDirection(0);
+                    return true;
+            }
+            return false;
         }
-        return false;
+
+        return super.onTouchEvent(event);
     }
 
 
     @Override
     public boolean onBackPressed() {
-        GameView.view.pushScene(new PauseScene());
+        pause();
         return true;
+    }
+
+    private void pause() {
+        GameView.view.pushScene(new PauseScene());
     }
 }

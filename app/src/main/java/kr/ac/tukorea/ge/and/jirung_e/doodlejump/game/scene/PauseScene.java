@@ -24,9 +24,9 @@ public class PauseScene extends Scene {
 
         Rect bgSubSrcRect = new Rect(0, 600, background_sub.getBitmap().getWidth(), background_sub.getBitmap().getHeight());
         background_sub.setSrcRect(bgSubSrcRect);
-        bg_height = width * (float)bgSubSrcRect.height() / bgSubSrcRect.width();
-        background_sub.setSize(width, bg_height);
-        background_sub.setPosition(width / 2f, Metrics.height - bg_height / 2f);
+        float bg_sub_height = width * (float)bgSubSrcRect.height() / bgSubSrcRect.width();
+        background_sub.setSize(width, bg_sub_height);
+        background_sub.setPosition(width / 2f, bg_height + bg_sub_height / 2f);
 
         Sprite resumeButtonSprite = new Sprite(R.mipmap.resume_button);
         float buttonWidth = width * 0.36f;
