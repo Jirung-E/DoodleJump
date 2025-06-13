@@ -25,11 +25,10 @@ public class Score implements IGameObject {
             new Rect(852, 0, 876, 34),
     };
     private final RectF dstRect = new RectF();
-    private float left;
-    private float baseY;
-    private float height;
     private float score = 0;
-    private int displayScore = 0;
+    public float left;
+    public float baseY;
+    public float height;
 
 
     public Score(float left, float baseY, float height) {
@@ -40,7 +39,7 @@ public class Score implements IGameObject {
 
 
     public void setScore(int score) {
-        this.score = this.displayScore = score;
+        this.score = score;
     }
     public float getScore() {
         return score;

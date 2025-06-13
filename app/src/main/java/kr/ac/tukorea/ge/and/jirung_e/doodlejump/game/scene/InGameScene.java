@@ -152,16 +152,12 @@ public class InGameScene extends Scene {
         for(IGameObject obj : objectsAt(Layer.enemy)) {
             Monster monster = (Monster)obj;
             // 아래로 내려가는 중에 충돌하는 경우
-            if(player.dy > 0) {
-                CcdResult result = player.collider.ccd(monster.collider, player.dx * GameView.frameTime, player.dy * GameView.frameTime);
-                if(result.isCollide) {
-                    if(-0.1f <= result.t && result.t < nearest_t) {
-                        if(result.ny < 0) {
-                            nearest_t = result.t;
-                            collidee = monster;
-                            nearest_result = result;
-                        }
-                    }
+            CcdResult result = player.collider.ccd(monster.collider, player.dx * GameView.frameTime, player.dy * GameView.frameTime);
+            if(result.isCollide) {
+                if(-0.1f <= result.t && result.t < nearest_t) {
+                    nearest_t = result.t;
+                    collidee = monster;
+                    nearest_result = result;
                 }
             }
         }
@@ -207,7 +203,7 @@ public class InGameScene extends Scene {
                 }
                 else {
                     // 몬스터와 충돌한 경우
-//                    player.die();
+                    player.stun();
                 }
             }
             else if(collidee instanceof Item) {

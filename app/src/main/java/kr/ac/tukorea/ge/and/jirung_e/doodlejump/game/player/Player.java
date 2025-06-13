@@ -45,6 +45,7 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
     private float crouchTime;
     private float boostPower;
     private float boostTime;
+    private boolean isAlive = true;
 
 
     ///////////////////////////////////////// Constructors /////////////////////////////////////////
@@ -164,11 +165,19 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
         crouchTime = 0;
     }
 
+    public void stun() {
+        isAlive = false;
+        collider.isActive = false;
+        dy = 0;
+    }
+
     /// 크기와 상관 없이 이동방향 설정
     /// - 양수: 오른쪽
     /// - 음수: 왼쪽
     /// - 0: 정지
     public void setTargetMoveDirection(int dx) {
+        if(!isAlive) return;
+
         target_dx = Math.signum(dx) * MOVE_SPEED;
         if(crouchTime < crouchTimeMax) {
             if (dx < 0) {
