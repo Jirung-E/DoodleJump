@@ -110,7 +110,7 @@ public class MapLoader implements IGameObject, ILayerProvider<Layer> {
         scene.add(tile);
 
         // 5% 확률로 아이템 생성
-        if(random.nextInt(2) == 0) {
+        if(random.nextInt(20) == 0) {
             // n% 확률로 스프링 생성
             if(random.nextInt(2) == 0) {
                 Spring spring = scene.getObject(Spring.class);

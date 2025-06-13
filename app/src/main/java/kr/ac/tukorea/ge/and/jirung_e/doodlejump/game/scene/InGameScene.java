@@ -8,7 +8,9 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.VertScrollBackground;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene.Scene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.CcdResult;
@@ -29,6 +31,7 @@ public class InGameScene extends Scene {
     private final MapLoader mapLoader;
     private final float MIN_HEIGHT;
     public static final float GRAVITY = 9.8f * 256f;
+    private static final VertScrollBackground background = new VertScrollBackground(R.mipmap.background);
 
 
     ///////////////////////////////////////// Constructors /////////////////////////////////////////
@@ -46,6 +49,9 @@ public class InGameScene extends Scene {
         add(tile);
 
         add(player);
+
+        background.addDistanceY(-8);
+        add(Layer.bg, background);
     }
 
 
@@ -166,6 +172,7 @@ public class InGameScene extends Scene {
             mapLoader.setDifficulty(score / 5000.0f);
 
             mapLoader.y += diff;
+            background.moveY(diff/4);
 
             ArrayList<IGameObject> tiles = objectsAt(Layer.tile);
             for(int i=tiles.size()-1; i>=0; --i) {

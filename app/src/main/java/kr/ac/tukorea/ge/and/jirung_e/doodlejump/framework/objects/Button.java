@@ -9,7 +9,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 public class Button implements ITouchable {
     private static final String TAG = Button.class.getSimpleName();
     public interface OnTouchListener {
-        public boolean onTouch(boolean pressed);
+        boolean onTouch(boolean pressed);
     }
     protected OnTouchListener listener;
     protected Sprite defaultSprite;
