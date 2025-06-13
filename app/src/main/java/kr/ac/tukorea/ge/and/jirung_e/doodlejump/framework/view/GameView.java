@@ -108,17 +108,24 @@ public class GameView extends View implements Choreographer.FrameCallback {
             drawDebugBackground(canvas);
         }
 
-        Scene scene = getTopScene();
-        if (scene != null) {
-            scene.draw(canvas);
+        int topSceneIndex = sceneStack.size() - 1;
+        if (topSceneIndex >= 0) {
+            draw(canvas, topSceneIndex);
         }
 
         canvas.restore();
         if (drawsDebugStuffs) {
-            drawDebugInfo(canvas, scene);
+            drawDebugInfo(canvas);
         }
     }
 
+    private void draw(Canvas canvas, int sceneIndex) {
+        Scene scene = sceneStack.get(sceneIndex);
+        if (scene.isTransparent()) {
+            draw(canvas, sceneIndex - 1);
+        }
+        scene.draw(canvas);
+    }
 
 
     @Override
@@ -190,7 +197,7 @@ public class GameView extends View implements Choreographer.FrameCallback {
         }
     }
 
-    private void drawDebugInfo(Canvas canvas, Scene scene) {
+    private void drawDebugInfo(Canvas canvas) {
         if (fpsPaint == null) {
             fpsPaint = new Paint();
             fpsPaint.setColor(Color.BLUE);
@@ -199,6 +206,7 @@ public class GameView extends View implements Choreographer.FrameCallback {
         }
 
         int fps = (int) (1.0f / frameTime);
+        Scene scene = getTopScene();
         int count = scene != null ? scene.count() : 0;
         String countsForLayers = scene != null ? scene.getDebugCounts() : "";
         canvas.drawText("FPS: " + fps, 80f, 80f, fpsPaint);

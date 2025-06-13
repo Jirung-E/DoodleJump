@@ -156,4 +156,8 @@ public class Scene {
     public boolean clipsRect() {
         return true;
     }
+
+    public boolean isTransparent() {
+        return false;
+    }
 }

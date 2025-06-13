@@ -239,4 +239,11 @@ public class InGameScene extends Scene {
         }
         return false;
     }
+
+
+    @Override
+    public boolean onBackPressed() {
+        GameView.view.pushScene(new PauseScene());
+        return true;
+    }
 }
