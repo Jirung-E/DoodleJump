@@ -150,9 +150,9 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
         }
     }
 
-    public Bullet shoot() {
+    public boolean shoot() {
         if(booster != null) {
-            return null;
+            return false;
         }
 
         attackTime = ATTACK_TIME_MAX;
@@ -160,7 +160,8 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
         sprite = getSprite();
         sprite.setPosition(x, y);
         cannonSprite.setPosition(x, y);
-        return new Bullet(x, y, JUMP_SPEED * 2, WIDTH * 0.2f);
+
+        return true;
     }
 
     public void equip(@NonNull ItemId item_id) {

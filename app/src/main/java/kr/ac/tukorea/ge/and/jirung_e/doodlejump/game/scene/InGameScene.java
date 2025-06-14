@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.objects.Bullet;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.objects.Score;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.VertScrollBackground;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
@@ -53,6 +54,15 @@ public class InGameScene extends Scene {
 
     public void superUpdate() {
         super.update();
+    }
+
+    public void shoot() {
+        if(player.shoot()) {
+            Bullet bullet = getObject(Bullet.class);
+            bullet.x = player.x;
+            bullet.y = player.y;
+            add(bullet);
+        }
     }
 
     public void scrollUp(float dy) {

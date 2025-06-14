@@ -131,10 +131,7 @@ public class InGameState implements IGameState {
                     @Override
                     public boolean onTouch(boolean pressed) {
                         if(pressed) {
-                            Bullet bullet = scene.player.shoot();
-                            if(bullet != null) {
-                                scene.add(Layer.bullet, bullet);
-                            }
+                            scene.shoot();
                         }
                         return true;
                     }
@@ -261,7 +258,7 @@ public class InGameState implements IGameState {
             Bullet bullet = (Bullet)obj;
             for(IGameObject m : scene.objectsAt(Layer.enemy)) {
                 Monster monster = (Monster)m;
-                CcdResult result = bullet.collider.ccd(monster.collider, 0, bullet.speedY * GameView.frameTime);
+                CcdResult result = bullet.collider.ccd(monster.collider, 0, Bullet.SPEED * GameView.frameTime);
                 if(result.isCollide) {
                     if(-0.1f <= result.t && result.t < nearest_t) {
                         nearest_t = result.t;
@@ -302,6 +299,15 @@ public class InGameState implements IGameState {
             // (아이템을 획득한 상태에서는 죽지 않음)
             if(scene.player.collider.isActive || !scene.player.isAlive) {
                 exit();
+            }
+        }
+
+        // Bullet remove
+        for(int i = scene.objectsAt(Layer.bullet).size() - 1; i >= 0; --i) {
+            IGameObject obj = scene.objectsAt(Layer.bullet).get(i);
+            Bullet bullet = (Bullet)obj;
+            if(bullet.collider.getBottom() < 0 || bullet.collider.getTop() > Metrics.height) {
+                scene.remove(bullet);
             }
         }
     }

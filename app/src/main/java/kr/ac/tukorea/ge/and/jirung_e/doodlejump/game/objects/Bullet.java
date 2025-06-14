@@ -9,28 +9,34 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IRecyclable;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.BoxCollider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sprite;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.InGameScene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.Layer;
 
 public class Bullet implements IGameObject, ILayerProvider<Layer>, IRecyclable {
-    private float x, y;
-    public float speedY;
+    public float x, y;
     public BoxCollider collider;
     private Sprite sprite;
+    public static final float SPEED = -InGameScene.GRAVITY * 1.2f;
+    private static final float SIZE = Metrics.width / 9.0f * 1.8f * 0.2f;
 
 
-    public Bullet(float x, float y, float speedY, float size) {
+    public Bullet() {
+        this(0, 0);
+    }
+
+    public Bullet(float x, float y) {
         this.x = x;
         this.y = y;
-        this.speedY = speedY;
-        this.collider = new BoxCollider(x, y, size, size);
+        this.collider = new BoxCollider(x, y, SIZE, SIZE);
         this.sprite = new Sprite(R.mipmap.bullet);
-        this.sprite.setSize(size, size);
+        this.sprite.setSize(SIZE, SIZE);
         this.sprite.setPosition(x, y);
     }
 
     @Override
     public void update() {
-        y += speedY * GameView.frameTime;
+        y += SPEED * GameView.frameTime;
         collider.setPosition(x, y);
         sprite.setPosition(x, y);
     }
@@ -59,6 +65,6 @@ public class Bullet implements IGameObject, ILayerProvider<Layer>, IRecyclable {
 
     @Override
     public void onRecycle() {
-
+        collider.isActive = true;
     }
 }
