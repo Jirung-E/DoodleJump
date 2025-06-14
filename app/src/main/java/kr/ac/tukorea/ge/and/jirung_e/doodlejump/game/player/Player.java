@@ -39,10 +39,10 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
     private static final float MOVE_SPEED = Metrics.width;
     private static final float ACCELERATION_X = 4 * MOVE_SPEED;
     private Sprite sprite;
-    private final HashMap<Action, Sprite> sprites;
+    private final HashMap<Integer, Sprite> sprites;
     private IBooster booster;
 
-    private Action action;
+    private int action;
     private static final float CROUCH_TIME_MAX = 0.5f;
     private static final float ATTACK_TIME_MAX = 0.5f;
     private float crouchTime;
@@ -68,7 +68,7 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
         sprite = new Sprite(R.mipmap.character_left_crouch);
         sprite.setOffset(0.0f, -HEIGHT_HALF * 1.12f);
         sprite.setSize(WIDTH, HEIGHT);
-        sprites.put(Action.LEFT_CROUCH, sprite);
+        sprites.put(Action.LEFT | Action.CROUCH, sprite);
 
         sprite = new Sprite(R.mipmap.character_right);
         sprite.setOffset(0.0f, -HEIGHT_HALF);
@@ -78,7 +78,7 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
         sprite = new Sprite(R.mipmap.character_right_crouch);
         sprite.setOffset(0.0f, -HEIGHT_HALF * 1.12f);
         sprite.setSize(WIDTH, HEIGHT);
-        sprites.put(Action.RIGHT_CROUCH, sprite);
+        sprites.put(Action.RIGHT | Action.CROUCH, sprite);
 
         sprite = new Sprite(R.mipmap.character_attack);
         sprite.setOffset(0.0f, -HEIGHT_HALF);
@@ -88,9 +88,9 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
         sprite = new Sprite(R.mipmap.character_attack_crouch);
         sprite.setOffset(0.0f, -HEIGHT_HALF * 1.12f);
         sprite.setSize(WIDTH, HEIGHT);
-        sprites.put(Action.ATTACK_CROUCH, sprite);
+        sprites.put(Action.ATTACK | Action.CROUCH, sprite);
 
-        action = Action.RIGHT_CROUCH;
+        action = Action.RIGHT | Action.CROUCH;
         sprite = sprites.get(action);
 
         x = Metrics.width / 2;
@@ -178,12 +178,7 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
 
     public void jump(float power) {
         dy = JUMP_SPEED * power;
-        if(action == Action.LEFT) {
-            action = Action.LEFT_CROUCH;
-        }
-        else if(action == Action.RIGHT) {
-            action = Action.RIGHT_CROUCH;
-        }
+        action |= Action.CROUCH;
         sprite = sprites.get(action);
         sprite.setPosition(x, y);
         crouchTime = 0;
@@ -203,19 +198,16 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
         if(!isAlive) return;
 
         targetDx = Math.signum(dx) * MOVE_SPEED;
-        if(crouchTime < CROUCH_TIME_MAX) {
-            if (dx < 0) {
-                action = Action.LEFT_CROUCH;
-            } else if (dx > 0) {
-                action = Action.RIGHT_CROUCH;
-            }
+        int prevDirection = action & Action.DIRECTION_MASK;
+        action &= ~Action.DIRECTION_MASK;
+        if(targetDx > 0) {
+            action |= Action.RIGHT;
+        }
+        else if(targetDx < 0) {
+            action |= Action.LEFT;
         }
         else {
-            if (dx < 0) {
-                action = Action.LEFT;
-            } else if (dx > 0) {
-                action = Action.RIGHT;
-            }
+            action |= prevDirection;
         }
         sprite = sprites.get(action);
         sprite.setPosition(x, y);
@@ -239,12 +231,7 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
     private void updateSprite() {
         crouchTime += GameView.frameTime;
         if(crouchTime >= CROUCH_TIME_MAX) {
-            if(action == Action.LEFT_CROUCH) {
-                action = Action.LEFT;
-            }
-            else if(action == Action.RIGHT_CROUCH) {
-                action = Action.RIGHT;
-            }
+            action &= ~Action.CROUCH;
             sprite = sprites.get(action);
         }
 

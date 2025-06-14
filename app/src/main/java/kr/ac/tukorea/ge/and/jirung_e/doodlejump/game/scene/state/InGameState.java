@@ -33,6 +33,7 @@ public class InGameState implements IGameState {
     private Button pauseButton;
     private Button shootButton;
     private RectF shootButtonArea;
+    private IGameObject shootButtonObj;
     private static final RectF touchArea = new RectF(0, Metrics.height / 2, Metrics.width, Metrics.height);
 
 
@@ -144,7 +145,7 @@ public class InGameState implements IGameState {
         shootButton.setPosition(shootButtonX, shootButtonY);
         shootButtonArea = RectUtil.newRectF(shootButtonX, shootButtonY, shootButtonWidth, shootButtonHeight);
 
-        IGameObject shootButtonObj = new IGameObject() {
+        shootButtonObj = new IGameObject() {
             @Override
             public void update() {
 
@@ -283,6 +284,7 @@ public class InGameState implements IGameState {
     public void exit() {
         scene.gameOver();
         scene.removeController(pauseButton);
+        scene.remove(Layer.ui, shootButtonObj);
     }
 
     @Override

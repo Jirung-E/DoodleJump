@@ -22,7 +22,7 @@ public class Propeller implements IBooster {
     private static final float animationSpeed = 20f; // frames per second
     private float animationTime = 0.0f;
     private float x, y;
-    private Action action = Action.LEFT; // 기본값은 왼쪽
+    private int action = Action.LEFT; // 기본값은 왼쪽
 
 
     public Propeller() {
@@ -35,7 +35,7 @@ public class Propeller implements IBooster {
 
 
     @Override
-    public void update(float x, float y, Action action, float deltaTime) {
+    public void update(float x, float y, int action, float deltaTime) {
         this.x = x;
         this.y = y;
         this.action = action;
@@ -53,7 +53,7 @@ public class Propeller implements IBooster {
 
     @Override
     public void draw(Canvas canvas) {
-        if((action.ordinal() & 0b01) == Action.LEFT.ordinal()) {
+        if((action & Action.DIRECTION_MASK) == Action.LEFT) {
             // 그대로 그리기
             sprite.draw(canvas);
         }
