@@ -96,7 +96,7 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
 
         cannonSprite = new Sprite(R.mipmap.character_cannon);
         float cannonWidth = HEIGHT * cannonSprite.getBitmap().getWidth() / cannonSprite.getBitmap().getHeight();
-        cannonSprite.setOffset(0.0f, -HEIGHT_HALF * 1f);
+        cannonSprite.setOffset(0.0f, -HEIGHT_HALF);
         cannonSprite.setSize(cannonWidth, HEIGHT);
         cannonSprite.setPosition(0, 0);
 

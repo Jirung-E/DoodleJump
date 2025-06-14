@@ -162,6 +162,7 @@ public class InGameState implements IGameState {
 
     @Override
     public void update() {
+        // Player
         float nearest_t = Float.POSITIVE_INFINITY;
         IGameObject collidee = null;
         CcdResult nearest_result = null;
@@ -231,7 +232,7 @@ public class InGameState implements IGameState {
                     // 몬스터를 밟은 경우
                     scene.player.y = scene.player.y + scene.player.dy * GameView.frameTime * nearest_t;
                     scene.player.jump();
-//                    ((Monster)collidee).die();
+                    ((Monster)collidee).die();
                 }
                 else {
                     // 몬스터와 충돌한 경우
@@ -250,6 +251,31 @@ public class InGameState implements IGameState {
                     scene.remove(item);
                 }
             }
+        }
+
+        nearest_result = null;
+
+        // Bullet
+        Bullet collided_bullet = null;
+        for(IGameObject obj : scene.objectsAt(Layer.bullet)) {
+            Bullet bullet = (Bullet)obj;
+            for(IGameObject m : scene.objectsAt(Layer.enemy)) {
+                Monster monster = (Monster)m;
+                CcdResult result = bullet.collider.ccd(monster.collider, 0, bullet.speedY * GameView.frameTime);
+                if(result.isCollide) {
+                    if(-0.1f <= result.t && result.t < nearest_t) {
+                        nearest_t = result.t;
+                        collidee = monster;
+                        nearest_result = result;
+                        collided_bullet = bullet;
+                    }
+                }
+            }
+        }
+        if(nearest_result != null) {
+            // 몬스터와 충돌
+            ((Monster)collidee).die();
+            scene.remove(collided_bullet);
         }
 
         scene.superUpdate();

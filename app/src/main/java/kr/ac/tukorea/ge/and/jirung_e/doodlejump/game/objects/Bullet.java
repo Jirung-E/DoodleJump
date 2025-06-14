@@ -4,14 +4,17 @@ import android.graphics.Canvas;
 
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IRecyclable;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.BoxCollider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sprite;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.Layer;
 
-public class Bullet implements IGameObject {
+public class Bullet implements IGameObject, ILayerProvider<Layer>, IRecyclable {
     private float x, y;
-    private float speedY;
-    private BoxCollider collider;
+    public float speedY;
+    public BoxCollider collider;
     private Sprite sprite;
 
 
@@ -47,5 +50,15 @@ public class Bullet implements IGameObject {
 
     public BoxCollider getCollider() {
         return collider;
+    }
+
+    @Override
+    public Layer getLayer() {
+        return Layer.bullet;
+    }
+
+    @Override
+    public void onRecycle() {
+
     }
 }
