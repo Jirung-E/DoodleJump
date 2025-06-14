@@ -24,7 +24,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Metrics.setGameSize(900, 1600);
-        GameView.drawsDebugStuffs = false;
+        GameView.drawsDebugStuffs = BuildConfig.DEBUG;
         super.onCreate(savedInstanceState);
         gameView = new GameView(this);
         gameView.pushScene(new LobbyScene());

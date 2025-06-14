@@ -3,33 +3,24 @@ package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.Button;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.objects.Score;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.VertScrollBackground;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sprite;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene.Scene;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.CcdResult;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.objects.MapLoader;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Item;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.monster.Monster;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.player.Player;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.state.GameOverState;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.state.IGameState;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.state.InGameState;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.BrokenTile;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.NormalTile;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Spring;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.Tile;
 
 public class InGameScene extends Scene {
@@ -40,7 +31,6 @@ public class InGameScene extends Scene {
     public final float MIN_HEIGHT;
     public static final float GRAVITY = 9.8f * 256f;
     public VertScrollBackground background = new VertScrollBackground(R.mipmap.background);
-    public final RectF touchArea = new RectF(0, Metrics.height / 2, Metrics.width, Metrics.height);
     private IGameState gameState = null;
 
 
@@ -151,23 +141,8 @@ public class InGameScene extends Scene {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        float[] pts = Metrics.fromScreen(event.getX(), event.getY());
-        if(touchArea.contains(pts[0], pts[1])) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                case MotionEvent.ACTION_MOVE:
-                    if(pts[0] >= Metrics.width / 2) {
-                        player.setTargetMoveDirection(1);
-                    }
-                    else {
-                        player.setTargetMoveDirection(-1);
-                    }
-                    return true;
-                case MotionEvent.ACTION_UP:
-                    player.setTargetMoveDirection(0);
-                    return true;
-            }
-            return false;
+        if(gameState.onTouchEvent(event)) {
+            return true;
         }
 
         return super.onTouchEvent(event);

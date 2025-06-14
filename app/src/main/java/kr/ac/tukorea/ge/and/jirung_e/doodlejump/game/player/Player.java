@@ -15,6 +15,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.BoxCollider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.objects.Bullet;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.Layer;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.InGameScene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.ItemId;
@@ -30,10 +31,11 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
     private final float COLLIDER_OFFSET_Y;
     public float x, y;
     public float dx, dy;
-    private float target_dx;
+    private float targetDx;
 
     public BoxCollider collider;
     private static final float JUMP_SPEED = -InGameScene.GRAVITY * 0.6f;
+    private static final float MAX_SPEED = InGameScene.GRAVITY;
     private static final float MOVE_SPEED = Metrics.width;
     private static final float ACCELERATION_X = 4 * MOVE_SPEED;
     private Sprite sprite;
@@ -41,8 +43,10 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
     private IBooster booster;
 
     private Action action;
-    private static final float crouchTimeMax = 0.5f;
+    private static final float CROUCH_TIME_MAX = 0.5f;
+    private static final float ATTACK_TIME_MAX = 0.5f;
     private float crouchTime;
+    private float attackTime;
     private float boostPower;
     private float boostTime;
     public boolean isAlive = true;
@@ -75,13 +79,25 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
         sprite.setOffset(0.0f, -HEIGHT_HALF * 1.12f);
         sprite.setSize(WIDTH, HEIGHT);
         sprites.put(Action.RIGHT_CROUCH, sprite);
+
+        sprite = new Sprite(R.mipmap.character_attack);
+        sprite.setOffset(0.0f, -HEIGHT_HALF);
+        sprite.setSize(WIDTH, HEIGHT);
+        sprites.put(Action.ATTACK, sprite);
+
+        sprite = new Sprite(R.mipmap.character_attack_crouch);
+        sprite.setOffset(0.0f, -HEIGHT_HALF * 1.12f);
+        sprite.setSize(WIDTH, HEIGHT);
+        sprites.put(Action.ATTACK_CROUCH, sprite);
+
         action = Action.RIGHT_CROUCH;
+        sprite = sprites.get(action);
 
         x = Metrics.width / 2;
         y = Metrics.height;
         dx = 0;
         dy = JUMP_SPEED;
-        target_dx = 0;
+        targetDx = 0;
 
         float COLLIDER_HEIGHT = HEIGHT * 0.8f;
         COLLIDER_OFFSET_Y = COLLIDER_HEIGHT / 2;
@@ -96,8 +112,8 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
     @Override
     public void update() {
         float prev_dx_sign = Math.signum(dx);
-        dx += Math.signum(target_dx - dx) * ACCELERATION_X * GameView.frameTime;
-        if(target_dx == 0 && prev_dx_sign != Math.signum(dx)) {
+        dx += Math.signum(targetDx - dx) * ACCELERATION_X * GameView.frameTime;
+        if(targetDx == 0 && prev_dx_sign != Math.signum(dx)) {
             dx = 0;
         }
         dx = Math.clamp(dx, -MOVE_SPEED, MOVE_SPEED);
@@ -113,7 +129,7 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
             }
         }
         else {
-            dy = Math.min(dy + InGameScene.GRAVITY * GameView.frameTime, -JUMP_SPEED);
+            dy = Math.min(dy + InGameScene.GRAVITY * GameView.frameTime, MAX_SPEED);
         }
 
         x += dx * GameView.frameTime;
@@ -125,6 +141,14 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
         if(booster != null) {
             booster.update(x, y, action, GameView.frameTime);
         }
+    }
+
+    public Bullet shoot() {
+        if(booster != null) {
+            return null;
+        }
+
+        return new Bullet(x, y, JUMP_SPEED * 2, WIDTH * 0.2f);
     }
 
     public void equip(@NonNull ItemId item_id) {
@@ -178,8 +202,8 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
     public void setTargetMoveDirection(int dx) {
         if(!isAlive) return;
 
-        target_dx = Math.signum(dx) * MOVE_SPEED;
-        if(crouchTime < crouchTimeMax) {
+        targetDx = Math.signum(dx) * MOVE_SPEED;
+        if(crouchTime < CROUCH_TIME_MAX) {
             if (dx < 0) {
                 action = Action.LEFT_CROUCH;
             } else if (dx > 0) {
@@ -214,7 +238,7 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
 
     private void updateSprite() {
         crouchTime += GameView.frameTime;
-        if(crouchTime >= crouchTimeMax) {
+        if(crouchTime >= CROUCH_TIME_MAX) {
             if(action == Action.LEFT_CROUCH) {
                 action = Action.LEFT;
             }

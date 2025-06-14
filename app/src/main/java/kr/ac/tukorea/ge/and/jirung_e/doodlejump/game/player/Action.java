@@ -5,4 +5,6 @@ public enum Action {
     RIGHT,          // 0b01
     LEFT_CROUCH,    // 0b10 = 0b00(LEFT) | 0b10(CROUCH)
     RIGHT_CROUCH,   // 0b11 = 0b01(RIGHT) | 0b10(CROUCH)
+    ATTACK,          // 0b100
+    ATTACK_CROUCH,    // 0b110 = 0b100(ATTACK) | 0b10(CROUCH)
 }

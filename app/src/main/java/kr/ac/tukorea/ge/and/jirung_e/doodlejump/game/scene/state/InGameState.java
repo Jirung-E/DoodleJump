@@ -2,20 +2,22 @@ package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.state;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
-
-import java.util.ArrayList;
+import android.graphics.RectF;
+import android.util.Log;
+import android.view.MotionEvent;
 
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.Button;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.CcdResult;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sprite;
-import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.scene.Scene;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.util.RectUtil;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Item;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.item.Spring;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.monster.Monster;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.objects.Bullet;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.objects.MapLoader;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.objects.Score;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.player.Player;
@@ -29,6 +31,9 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.Tile;
 public class InGameState implements IGameState {
     private final InGameScene scene;
     private Button pauseButton;
+    private Button shootButton;
+    private RectF shootButtonArea;
+    private static final RectF touchArea = new RectF(0, Metrics.height / 2, Metrics.width, Metrics.height);
 
 
     public InGameState(InGameScene scene) {
@@ -113,6 +118,44 @@ public class InGameState implements IGameState {
             }
         };
         scene.add(Layer.ui, pauseButtonObj);
+
+        Sprite shootButtonSprite = new Sprite(R.mipmap.shoot_button);
+        float shootButtonWidth = Metrics.width * 0.4f;
+        float shootButtonHeight = shootButtonWidth * (float)shootButtonSprite.getBitmap().getHeight() / shootButtonSprite.getBitmap().getWidth();
+        shootButtonSprite.setSize(shootButtonWidth, shootButtonHeight);
+        shootButton = new Button(
+                shootButtonSprite,
+                shootButtonSprite,
+                new Button.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(boolean pressed) {
+                        if(pressed) {
+                            Bullet bullet = scene.player.shoot();
+                            if(bullet != null) {
+                                scene.add(Layer.bullet, bullet);
+                            }
+                        }
+                        return true;
+                    }
+                }
+        );
+        float shootButtonX = Metrics.width / 2;
+        float shootButtonY = Metrics.height - shootButtonHeight * 0.8f;
+        shootButton.setPosition(shootButtonX, shootButtonY);
+        shootButtonArea = RectUtil.newRectF(shootButtonX, shootButtonY, shootButtonWidth, shootButtonHeight);
+
+        IGameObject shootButtonObj = new IGameObject() {
+            @Override
+            public void update() {
+
+            }
+
+            @Override
+            public void draw(Canvas canvas) {
+                shootButton.draw(canvas);
+            }
+        };
+        scene.add(Layer.ui, shootButtonObj);
     }
 
 
@@ -240,5 +283,34 @@ public class InGameState implements IGameState {
     public void exit() {
         scene.gameOver();
         scene.removeController(pauseButton);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        float[] pts = Metrics.fromScreen(event.getX(), event.getY());
+
+        if(shootButtonArea.contains(pts[0], pts[1])) {
+            return shootButton.onTouchEvent(event);
+        }
+
+        if(touchArea.contains(pts[0], pts[1])) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                case MotionEvent.ACTION_MOVE:
+                    if(pts[0] >= Metrics.width / 2) {
+                        scene.player.setTargetMoveDirection(1);
+                    }
+                    else {
+                        scene.player.setTargetMoveDirection(-1);
+                    }
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    scene.player.setTargetMoveDirection(0);
+                    return true;
+            }
+            return false;
+        }
+
+        return false;
     }
 }

@@ -26,8 +26,6 @@ public class GameOverState implements IGameState {
 
     @Override
     public void enter() {
-        scene.touchArea.set(0, 0, 0, 0);
-
         GameOverObject gameOverObject = new GameOverObject(scene);
 
         scene.add(Layer.ui, gameOverObject);
@@ -41,6 +39,12 @@ public class GameOverState implements IGameState {
     @Override
     public void exit() {
 
+    }
+
+    @Override
+    public boolean onTouchEvent(android.view.MotionEvent event) {
+        // 처리하지 않음(버튼을 이미 controller에 등록함)
+        return false;
     }
 }
 
@@ -149,7 +153,7 @@ class GameOverObject implements IGameObject {
             float dy = scene.player.dy * GameView.frameTime;
             y -= dy;
             if(y < 0) {
-                dy = -y; // dy가 음수일 때 y가 0보다 작아지지 않도록 보정
+                dy = y + dy;
                 y = 0;
             }
 

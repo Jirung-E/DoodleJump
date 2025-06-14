@@ -58,6 +58,10 @@ public class BoxCollider {
         return RectF.intersects(this.rect, other.rect);
     }
 
+    public void move(float dx, float dy) {
+        rect.offset(dx, dy);
+    }
+
 
     public CcdResult ccd(BoxCollider other, float dx, float dy) {
         CcdResult result = new CcdResult();
