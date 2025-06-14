@@ -4,6 +4,8 @@ import android.graphics.Rect;
 
 import androidx.annotation.NonNull;
 
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sound;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile.Tile;
 
 public class Spring extends Item {
@@ -24,6 +26,7 @@ public class Spring extends Item {
         if(collider != null) {
             collider.isActive = false;
             setSrcRect();
+            Sound.playEffect(R.raw.spring);
         }
     }
 

@@ -10,6 +10,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.Button;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.IGameObject;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.CcdResult;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sound;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sprite;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.util.RectUtil;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
@@ -298,6 +299,7 @@ public class InGameState implements IGameState {
             // 일반적인 상황에서 떨어지거나 몬스터와 충돌하여 죽은 경우
             // (아이템을 획득한 상태에서는 죽지 않음)
             if(scene.player.collider.isActive || !scene.player.isAlive) {
+                Sound.playEffect(R.raw.fall);
                 exit();
             }
         }

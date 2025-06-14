@@ -2,6 +2,8 @@ package kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.tile;
 
 import android.graphics.Rect;
 
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sound;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.InGameScene;
 
@@ -53,6 +55,7 @@ public class BrokenTile extends Tile {
             index = 1;
             animTimer = 0;
             setSrcRect();
+            Sound.playEffect(R.raw.tile_break);
         }
     }
 

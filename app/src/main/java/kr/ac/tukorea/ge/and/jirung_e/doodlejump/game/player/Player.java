@@ -10,6 +10,7 @@ import java.util.HashMap;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.R;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.objects.ILayerProvider;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.BitmapPool;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sound;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sprite;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.physics.BoxCollider;
@@ -160,6 +161,7 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
         sprite = getSprite();
         sprite.setPosition(x, y);
         cannonSprite.setPosition(x, y);
+        Sound.playEffect(R.raw.shoot_1);
 
         return true;
     }
@@ -169,10 +171,12 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
             case PROPELLER:
                 booster = new Propeller();
                 boost();
+                Sound.playEffect(R.raw.propeller);
                 break;
             case JETPACK:
                 booster = new Jetpack();
                 boost();
+                Sound.playEffect(R.raw.jetpack);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown item: " + item_id);
@@ -196,6 +200,7 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
         sprite.setPosition(x, y);
         cannonSprite.setPosition(x, y);
         crouchTime = 0;
+        Sound.playEffect(R.raw.jump);
     }
 
     public void stun() {
