@@ -34,6 +34,11 @@ public class Button implements ITouchable {
         pressedSprite.setPosition(x, y);
     }
 
+    public void move(float dx, float dy) {
+        defaultSprite.move(dx, dy);
+        pressedSprite.move(dx, dy);
+    }
+
 
     protected boolean captures;
     @Override

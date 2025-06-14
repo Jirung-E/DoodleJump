@@ -160,4 +160,12 @@ public class Scene {
     public boolean isTransparent() {
         return false;
     }
+
+    public void addController(ITouchable controller) {
+        controllers.add(controller);
+    }
+
+    public void removeController(ITouchable controller) {
+        controllers.remove(controller);
+    }
 }

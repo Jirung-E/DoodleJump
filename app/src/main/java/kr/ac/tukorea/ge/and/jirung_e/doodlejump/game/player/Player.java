@@ -45,7 +45,7 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
     private float crouchTime;
     private float boostPower;
     private float boostTime;
-    private boolean isAlive = true;
+    public boolean isAlive = true;
 
 
     ///////////////////////////////////////// Constructors /////////////////////////////////////////

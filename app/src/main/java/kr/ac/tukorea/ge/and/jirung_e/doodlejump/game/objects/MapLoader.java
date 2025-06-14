@@ -79,11 +79,13 @@ public class MapLoader implements IGameObject, ILayerProvider<Layer> {
                 }
                 // Monster 생성
                 else {
-                    Monster monster = scene.getObject(Monster1.class);
-                    monster.x = random.nextInt(Tile.X_RANGE) + Tile.START_X;
-                    monster.y = (minY + maxY) / 2;
-                    monster.update();
-                    scene.add(monster);
+                    if(random.nextInt(50) == 0) {
+                        Monster monster = scene.getObject(Monster1.class);
+                        monster.x = random.nextInt(Tile.X_RANGE) + Tile.START_X;
+                        monster.y = (minY + maxY) / 2;
+                        monster.update();
+                        scene.add(monster);
+                    }
                 }
             }
             else {

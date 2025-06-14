@@ -40,7 +40,7 @@
 | 3주차 | 캐릭터 애니메이션 | 80% | 공격 애니메이션이 없음 |
 | 4주차 | 아이템 효과 구현 / 아이템 애니메이션 | 100% | |
 | 5주차 | 발판, 몬스터, 아이템 랜덤생성 / 점수계산 | 70% | 일부 몬스터가 구현되지 않음 |
-| 6주차 | 게임오버 처리 / 일시정지 | 0% | |
+| 6주차 | 게임오버 처리 / 일시정지 | 100% | |
 | 7주차 | 기록저장 및 불러오기 | 0% | |
 | 8주차 | 효과음 추가 / 최종점검 | 0% | |
 
@@ -73,9 +73,12 @@
 | `NormalTile` | <li>부모클래스: `Tile`</li><li>고정된 발판</li> | ![](sample_images/normal_tile.png) |
 | `MovingTile` | <li>부모클래스: `Tile`</li><li>화면 양 끝을 좌우로 왕복하는 발판</li> | ![](sample_images/moving_tile.png) |
 | `BrokenTile` | <li>부모클래스: `Tile`</li><li>밟으면 부서지는 발판</li><li>부서지는 애니메이션</li> | ![](sample_images/broken_tile.png) |
-| `TileLoader` | <li>타일생성(올라가지 못하는 패턴이 생기지 않도록 구현)</li> | |
+| `MapLoader` | <li>타일/아이템/몬스터 생성(올라가지 못하는 패턴이 생기지 않도록 구현)</li> | |
 | `Item` | <li>플레이어가 위로 올라가는데 도움을 주는 오브젝트</li><li>한번 사용하면 비활성화됨</li><li>발판 위에 생성됨</li> | |
 | `Spring` | <li>부모클래스: `Item`</li><li>플레이어가 밟으면 더 높이 점프한다</li><li>튕기는 애니메이션</li> | ![](sample_images/spring.png) |
+| `Propeller` | <li>부모클래스: `Item`</li><li>플레이어가 밟으면 일정시간동안 빠르게 올라간다</li><li>발동중엔 무적상태가 된다</li><li>프로펠러 애니메이션</li> | ![](sample_images/propeller.png) |
+| `Jetpack` | <li>부모클래스: `Item`</li><li>플레이어가 밟으면 일정시간동안 빠르게 올라간다</li><li>발동중엔 무적상태가 된다</li><li>제트팩 애니메이션</li> | ![](sample_images/jetpack.png) |
+| `Monster` | <li>플레이어가 충돌시 게임오버된다</li><li>플레이어가 밟으면 처치된다</li><li>플레이어가 총알을 맞추면 처치된다</li></li> | ![](sample_images/monster.png) |
 | `InGameScene` | <li>InGame 상수 정의(중력상수 등)</li><li>충돌처리</li><li>점수계산</li> | |
 
 
@@ -120,12 +123,12 @@
 <img src="sample_images/main.png" width="500dp"/>
 
 #### 게임화면
-- 화면 아래에 왼쪽/오른쪽 이동 버튼 배치  
-- 화면의 아무데나 터치하면 공격
+- 화면의 아래 절반 터치시 좌/우 이동
+- 화면 아래에 공격버튼 배치  
 - 상단에 점수와 정지 버튼 배치
 - 화면 오른쪽에 해당 위치까지 올라왔던 기록을 표시
 
-<img src="sample_images/ingame_move_button.png" width="500dp"/>
+<img src="sample_images/ingame_attack_button.png" width="500dp"/>
 
 #### 정지화면
 - 상단에 점수 표시
