@@ -49,6 +49,11 @@ public class Score implements IGameObject {
         score += amount;
     }
 
+    public void move(float dx, float dy) {
+        left += dx;
+        baseY += dy;
+    }
+
 
     @Override
     public void update() {

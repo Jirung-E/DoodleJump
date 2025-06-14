@@ -11,6 +11,7 @@ import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.BitmapPool;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.resource.Sprite;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.GameView;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.framework.view.Metrics;
+import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.objects.Score;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.InGameScene;
 import kr.ac.tukorea.ge.and.jirung_e.doodlejump.game.scene.Layer;
 
@@ -60,6 +61,7 @@ class GameOverObject implements IGameObject {
 
     public final Button playAgainButton;
     private final Button menuButton;
+    private final Score score;
 
 
     public GameOverObject(InGameScene scene) {
@@ -86,7 +88,9 @@ class GameOverObject implements IGameObject {
         float scoreTextHeight = scoreTextWidth * (float)scoreSrcRect.height() / scoreSrcRect.width();
         scoreSprite.setSrcRect(scoreSrcRect);
         scoreSprite.setSize(scoreTextWidth, scoreTextHeight);
-        scoreSprite.setPosition(Metrics.width * 0.45f, Metrics.height * 0.4f);
+        float scoreTextX = Metrics.width * 0.45f;
+        float scoreTextY = Metrics.height * 0.4f;
+        scoreSprite.setPosition(scoreTextX, scoreTextY);
         scoreSprite.move(0, y);
 
         Rect bottomSrcRect = new Rect(2, 370, 642, 511);
@@ -144,6 +148,11 @@ class GameOverObject implements IGameObject {
         menuButton.setPosition(Metrics.width * 0.7f, Metrics.height * 0.7f);
         menuButton.move(0, y);
         scene.addController(menuButton);
+
+        score = new Score(scoreTextX + scoreTextWidth / 2 + 20, scoreTextY + scoreTextHeight / 4, scoreTextHeight * 0.6f);
+        score.setScore((int)scene.score.getScore());
+        scene.add(Layer.ui, score);
+        score.move(0, y);
     }
 
 
@@ -164,6 +173,7 @@ class GameOverObject implements IGameObject {
             bottomSprite.move(0, -dy);
             playAgainButton.move(0, -dy);
             menuButton.move(0, -dy);
+            score.move(0, -dy);
         }
     }
 
