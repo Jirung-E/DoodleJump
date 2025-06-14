@@ -39,6 +39,7 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
     private static final float MOVE_SPEED = Metrics.width;
     private static final float ACCELERATION_X = 4 * MOVE_SPEED;
     private Sprite sprite;
+    private Sprite cannonSprite;
     private final HashMap<Integer, Sprite> sprites;
     private IBooster booster;
 
@@ -92,6 +93,12 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
 
         action = Action.RIGHT | Action.CROUCH;
         sprite = sprites.get(action);
+
+        cannonSprite = new Sprite(R.mipmap.character_cannon);
+        float cannonWidth = HEIGHT * cannonSprite.getBitmap().getWidth() / cannonSprite.getBitmap().getHeight();
+        cannonSprite.setOffset(0.0f, -HEIGHT_HALF * 1f);
+        cannonSprite.setSize(cannonWidth, HEIGHT);
+        cannonSprite.setPosition(0, 0);
 
         x = Metrics.width / 2;
         y = Metrics.height;
@@ -148,6 +155,11 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
             return null;
         }
 
+        attackTime = ATTACK_TIME_MAX;
+        action |= Action.ATTACK;
+        sprite = getSprite();
+        sprite.setPosition(x, y);
+        cannonSprite.setPosition(x, y);
         return new Bullet(x, y, JUMP_SPEED * 2, WIDTH * 0.2f);
     }
 
@@ -179,8 +191,9 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
     public void jump(float power) {
         dy = JUMP_SPEED * power;
         action |= Action.CROUCH;
-        sprite = sprites.get(action);
+        sprite = getSprite();
         sprite.setPosition(x, y);
+        cannonSprite.setPosition(x, y);
         crouchTime = 0;
     }
 
@@ -209,13 +222,19 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
         else {
             action |= prevDirection;
         }
-        sprite = sprites.get(action);
-        sprite.setPosition(x, y);
+        if((action & Action.ATTACK) != Action.ATTACK) {
+            sprite = getSprite();
+            sprite.setPosition(x, y);
+            cannonSprite.setPosition(x, y);
+        }
     }
 
     @Override
     public void draw(Canvas canvas) {
         sprite.draw(canvas);
+        if((action & Action.ATTACK) == Action.ATTACK) {
+            cannonSprite.draw(canvas);
+        }
         if(GameView.drawsDebugStuffs) {
             collider.draw(canvas);
         }
@@ -232,10 +251,29 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
         crouchTime += GameView.frameTime;
         if(crouchTime >= CROUCH_TIME_MAX) {
             action &= ~Action.CROUCH;
-            sprite = sprites.get(action);
+            sprite = getSprite();
+        }
+        if(attackTime > 0) {
+            attackTime -= GameView.frameTime;
+            if(attackTime <= 0) {
+                action &= ~Action.ATTACK;
+                sprite = getSprite();
+            }
         }
 
         sprite.setPosition(x, y);
+        cannonSprite.setPosition(x, y);
+    }
+
+    private Sprite getSprite() {
+        int idx = action;
+        if((action & Action.ATTACK) == Action.ATTACK) {
+            idx &= ~Action.DIRECTION_MASK;
+        }
+        else {
+            idx &= ~Action.ATTACK;
+        }
+        return sprites.get(idx);
     }
 
 
