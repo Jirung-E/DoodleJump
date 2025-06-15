@@ -16,6 +16,8 @@
 | :---: | :---: | :---: |
 | ![게임화면1](sample_images/ingame-1.png) | ![게임화면2](sample_images/ingame-2.png) | ![게임화면3](sample_images/ingame-3.png) |
 
+<br/>
+
 ### 개발 범위
 - 캐릭터 조작(이동, 공격)
 - 발판, 몬스터, 아이템 랜덤생성
@@ -37,17 +39,22 @@
 | :---: | :---: | :---: | --- |
 | 1주차 | 캐릭터가 발판 위에서 점프 | 100% | |
 | 2주차 | 캐릭터 조작 / 충돌처리 | 100% | |
-| 3주차 | 캐릭터 애니메이션 | 90% | 기절 애니메이션이 없음 |
+| 3주차 | 캐릭터 애니메이션 | 100% | |
 | 4주차 | 아이템 효과 구현 / 아이템 애니메이션 | 100% | |
-| 5주차 | 발판, 몬스터, 아이템 랜덤생성 / 점수계산 | 80% | 일부 몬스터가 구현되지 않음 |
+| 5주차 | 발판, 몬스터, 아이템 랜덤생성 / 점수계산 | 80% | 몬스터 구현 미흡 |
 | 6주차 | 게임오버 처리 / 일시정지 | 100% | |
-| 7주차 | 기록저장 및 불러오기 | 0% | |
-| 8주차 | 효과음 추가 / 최종점검 | 0% | |
+| 7주차 | 기록저장 및 불러오기 | 0% | 구현 안됨 |
+| 8주차 | 효과음 추가 / 최종점검 | 100% | |
 
-| 이동/점프 | 발판/아이템 | 발판랜덤생성(4배속) |
+| 이동/점프 | 발판/아이템 | 랜덤생성(4배속) |
 | :---: | :---: | :---: |
 | ![](sample_images/doodlejump_ingame1.gif) | ![](sample_images/doodlejump_ingame2.gif) | ![](sample_images/doodlejump_ingame3.gif) |
 
+| 부스터 아이템 | 몬스터 | 게임오버 |
+| :---: | :---: | :---: |
+| ![](sample_images/booster.gif) | ![](sample_images/monster.gif) | ![](sample_images/die.gif) |
+
+<br/>
 
 | 주차 | 커밋 횟수 |
 | :---: | :---: | 
@@ -56,11 +63,51 @@
 | 3주차 | 0 |
 | 4주차 | 1 |
 | 5주차 | 4 |
-| 6주차 | 8 |
-| 7주차 | - |
-| 8주차 | - |
+| 6주차 | 11 |
+| 7주차 | 9 |
+| 8주차 | 8 |
+| 9주차 | 0 |
+| 10주차 | 7 |
+| 11주차 | 8 |
 
-![commit](sample_images/commit_mid.png)
+![commit](sample_images/commit_final.png)
+
+<br/>
+
+### 인터페이스
+| 메인화면 | 게임화면 | 게임오버화면 | 정지화면 |
+| :---: | :---: | :---: | :---: |
+| ![](sample_images/my_main.png) | ![](sample_images/my_ingame.png) | ![](sample_images/my_gameover.png) | ![](sample_images/my_pause.png) |
+
+
+<img src="sample_images/scene_change_current.png" width="700dp"/>
+
+#### 메인화면
+- play버튼을 누르면 게임화면으로 이동
+
+#### 게임화면
+- 화면의 아래 절반 터치시 좌/우 이동
+- 화면 아래에 공격버튼 배치
+- 상단에 점수와 정지 버튼 배치
+
+<img src="sample_images/my_ingame_control.png" width="300dp"/>
+
+#### 정지화면
+- 상단에 점수 표시
+- resume 버튼을 누르면 게임화면으로 이동
+
+#### 게임오버화면
+- 현재 점수 표시
+- play again 버튼을 누르면 게임화면으로 이동
+- menu 버튼을 누르면 메인화면으로 이동
+
+#### 기록화면
+구현되지 않음
+
+
+<br/>
+
+- - -
 
 <br/>
 
@@ -76,91 +123,66 @@
 | `MapLoader` | <li>타일/아이템/몬스터 생성(올라가지 못하는 패턴이 생기지 않도록 구현)</li> | |
 | `Item` | <li>플레이어가 위로 올라가는데 도움을 주는 오브젝트</li><li>한번 사용하면 비활성화됨</li><li>발판 위에 생성됨</li> | |
 | `Spring` | <li>부모클래스: `Item`</li><li>플레이어가 밟으면 더 높이 점프한다</li><li>튕기는 애니메이션</li> | ![](sample_images/spring.png) |
-| `Propeller` | <li>부모클래스: `Item`</li><li>플레이어가 밟으면 일정시간동안 빠르게 올라간다</li><li>발동중엔 무적상태가 된다</li><li>프로펠러 애니메이션</li> | ![](sample_images/propeller.png) |
-| `Jetpack` | <li>부모클래스: `Item`</li><li>플레이어가 밟으면 일정시간동안 빠르게 올라간다</li><li>발동중엔 무적상태가 된다</li><li>제트팩 애니메이션</li> | ![](sample_images/jetpack.png) |
-| `Monster` | <li>플레이어가 충돌시 게임오버된다</li><li>플레이어가 밟으면 처치된다</li><li>플레이어가 총알을 맞추면 처치된다</li></li> | ![](sample_images/monster.png) |
+| `Propeller` | <li>부모클래스: `Item`</li><li>일정시간동안 빠르게 올라간다</li><li>발동중엔 무적상태가 된다</li><li>프로펠러 애니메이션</li> | ![](sample_images/propeller.png) |
+| `Jetpack` | <li>부모클래스: `Item`</li><li>일정시간동안 빠르게 올라간다</li><li>발동중엔 무적상태가 된다</li><li>제트팩 애니메이션</li> | ![](sample_images/jetpack.png) |
+| `Monster` | <li>플레이어가 충돌시 게임오버된다</li><li>플레이어가 밟으면 처치된다</li><li>플레이어가 콩알탄을 맞추면 처치된다</li></li> | ![](sample_images/monster.png) |
 | `InGameScene` | <li>InGame 상수 정의(중력상수 등)</li><li>충돌처리</li><li>점수계산</li> | |
 
+<br/>
+
+### 사용된 기술
+수업내용 참고
+- Pool/객체 재활용
+- 레이어
+- 스코어 출력
+- 버튼
+- VertScroll BG
+- Multiple Scene / Transparent Scene
+- Sound
+
+직접개발
+- CCD
+- FSM
 
 
+<br/>
+<br/>
+
+
+### 부족한점
+- 몬스터 Path
+- 기록저장/불러오기
+- 화면의 빈 부분 처리
+
+#### 출시한다면
+- 장애물
+- 애니메이션
+- 글로벌 순위표
+
+### 수업후기
+다른 수업들이 3D 위주라서 소홀했던 2D게임에서 자주 사용되는 기법들을 배우는것을 기대했는데,
+깃헙에 샘플 프로그램을 단계별 커밋까지 나눠서 올려주셔서 기대했던 내용들을 습득하는데 큰 도움이 되었습니다.  
+아쉬웠던 점은, 안드로이드가 코틀린을 밀어주고있는데 자바 대신 코틀린을 썼다면 더 좋았을거같습니다.
+최신 언어의 문법과 구조를 훑어보는것도 좋았을것 같습니다.
+
+
+
+<br/>
+<br/>
+<br/>
+<br/>
 <br/>
 
 - - -
 
 <br/>
-
-
-
-## 요구사항분석
-
-### 기능 요구사항
-난이도 조절을 위해 다양한 발판이 있어야 한다.
-- 일반발판: 초록색
-- 좌우이동발판: 파란색, 화면의 왼쪽 끝에서 오른쪽 끝 사이를 왕복한다.
-- 부서지는발판: 금이간 갈색, 캐릭터가 밟으면 부서지고 점프하지 못한다.
-
-랜덤 생성
-- 발판은 랜덤으로 생성되지만, 올라가지 못하는 패턴이 생기지 않도록 일반발판과 좌우이동발판을 적절히 생성하고 중간중간에 추가적인 발판들을 생성한다.
-- 아이템은 부서지지 않는 발판 위에 랜덤으로 생성된다. 종류는 다음과 같다.
-    - 스프링: 더 높게 점프
-    - 프로펠러모자: 일정시간동안 빠르게 올라감. 이때는 몬스터나 아이템 등과 상호작용하지 않음
-    - 제트팩: 프로펠러모자와 효과는 동일하지만 더 빠름
-
-아래로 떨어지면 게임이 종료되어야한다.
-- 발판이 화면 밖으로 나가면 제거된다.
-
-기타
-- 캐릭터는 좌우 화면 밖으로 나가면 반대편에서 나온다.
-- 콩알탄은 수직 위로만 발사된다.
-
-### 인터페이스
-<img src="sample_images/scene_change.png" width="700dp"/>
-
-#### 메인화면
-- play버튼을 누르면 게임화면으로 이동
-- scores버튼을 누르면 기록화면으로 이동
-
-<img src="sample_images/main.png" width="500dp"/>
-
-#### 게임화면
-- 화면의 아래 절반 터치시 좌/우 이동
-- 화면 아래에 공격버튼 배치  
-- 상단에 점수와 정지 버튼 배치
-- 화면 오른쪽에 해당 위치까지 올라왔던 기록을 표시
-
-<img src="sample_images/ingame_attack_button.png" width="500dp"/>
-
-#### 정지화면
-- 상단에 점수 표시
-- resume 버튼을 누르면 게임화면으로 이동
-
-<img src="sample_images/pause.png" width="500dp"/>
-
-#### 게임오버화면
-- 현재 점수, 최고점수 표시
-- 기록으로 저장할 이름 입력 가능
-- play again 버튼을 누르면 게임화면으로 이동
-- menu 버튼을 누르면 메인화면으로 이동
-
-<img src="sample_images/gameover.png" width="500dp"/>
-
-#### 기록화면
-- scores에서는 순위표(등수, 이름, 점수) 표시
-- stats에서는 총 플레이 횟수, 최고점수, 최저점수, 평균점수, 총 플레이 시간, 최장 플레이 시간, 평균 플레이 시간 표시
-- menu 버튼을 누르면 메인화면으로 이동
-
-| scores | stats |
-| :---: | :---: |
-| <img src="sample_images/scores.png" width="300dp"/> | <img src="sample_images/stats.png" width="300dp"/> |
-
+<br/>
+<br/>
+<br/>
 <br/>
 
 
-### 기술
-- Object Lifecycle Management (recycle)
-- VertScroll BG
-- Image Resource Sheet
-- Collision Check / Collision Handling
-- Transparent Scene
-- Path Animation
-- ...
+
+
+
+[요구사항](요구사항.md)
