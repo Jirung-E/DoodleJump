@@ -40,8 +40,15 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
     private static final float MOVE_SPEED = Metrics.width;
     private static final float ACCELERATION_X = 4 * MOVE_SPEED;
     private Sprite sprite;
-    private Sprite cannonSprite;
+    private final Sprite cannonSprite;
     private final HashMap<Integer, Sprite> sprites;
+    private final Sprite[] stunSprites = {
+            new Sprite(R.mipmap.stars1),
+            new Sprite(R.mipmap.stars2),
+            new Sprite(R.mipmap.stars3),
+    };
+    private int stunIndex = 0;
+    private float stunTime = 0.0f;
     private IBooster booster;
 
     private int action;
@@ -100,6 +107,11 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
         cannonSprite.setOffset(0.0f, -HEIGHT_HALF);
         cannonSprite.setSize(cannonWidth, HEIGHT);
         cannonSprite.setPosition(0, 0);
+
+        float starHeight = WIDTH / 2 * ((float) stunSprites[0].getBitmap().getHeight() / stunSprites[0].getBitmap().getWidth());
+        stunSprites[0].setSize(WIDTH / 2, starHeight);
+        stunSprites[1].setSize(WIDTH / 2, starHeight);
+        stunSprites[2].setSize(WIDTH / 2, starHeight);
 
         x = Metrics.width / 2;
         y = Metrics.height;
@@ -247,6 +259,11 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
         if(booster != null) {
             booster.draw(canvas);
         }
+        if(!isAlive) {
+            Sprite stunSprite = stunSprites[stunIndex];
+            stunSprite.setPosition(x, y - COLLIDER_OFFSET_Y * 2);
+            stunSprite.draw(canvas);
+        }
     }
 
     private void updateCollider() {
@@ -269,6 +286,14 @@ public class Player implements IGameObject, ILayerProvider<Layer> {
 
         sprite.setPosition(x, y);
         cannonSprite.setPosition(x, y);
+
+        if(!isAlive) {
+            stunTime += GameView.frameTime;
+            if(stunTime >= 0.1f) {
+                stunTime = 0.0f;
+                stunIndex = (stunIndex + 1) % stunSprites.length;
+            }
+        }
     }
 
     private Sprite getSprite() {
